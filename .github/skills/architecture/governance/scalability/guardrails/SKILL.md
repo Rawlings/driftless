@@ -28,6 +28,7 @@ metadata:
 - Do not couple selection-clearing logic to creation gestures in separate event phases.
 - Require regression checks for create, select, drag, resize, and pan after any input-system changes.
 - Apply dependency-first delivery for generic concerns (input gestures, drag and drop, keyboard shortcuts, parsing, validation, tree virtualization, export helpers).
+- Apply dependency-first delivery for non-differentiating UI primitives including iconography packages.
 - Before writing custom infrastructure, run a package audit and evaluate mature options by maintenance health, bundle impact, API fit, and browser behavior coverage.
 - If custom implementation is chosen, document why in the change summary and identify an owner for long-term maintenance.
 

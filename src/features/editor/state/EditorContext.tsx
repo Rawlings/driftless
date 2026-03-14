@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useMemo, useState, type ReactNo
 import type { Element } from '../../../core/editor/types'
 import type { EditorToolId } from '../../../core/editor/tools'
 import { useEditorState } from '../../../hooks/editor/useEditorState'
-import { useInteractions } from '../../../hooks/editor/useInteractions'
 
 interface EditorDataContextValue {
   elements: Element[]
@@ -16,20 +15,19 @@ interface EditorDataContextValue {
 interface EditorCommandsContextValue {
   addElement: (type: Element['type'], position?: { left: number; top: number }) => string
   updateElement: (id: string, updates: Partial<Element>) => void
+  moveElementLayer: (id: string, direction: 'up' | 'down' | 'front' | 'back') => void
+  reorderElements: (orderedIds: string[]) => void
+  setElementParent: (id: string, parentId: string | null) => void
+  setElementParentAt: (id: string, parentId: string | null, insertIndexTopFirst: number) => void
+  selectElement: (id: string | null) => void
   clearSelection: () => void
   setActiveTool: (tool: EditorToolId) => void
   setViewportOffset: (offset: { x: number; y: number }) => void
   setEditingTextId: (id: string | null) => void
 }
 
-interface EditorInteractionsContextValue {
-  handleMouseDown: (e: React.MouseEvent, id: string) => void
-  handleResizeMouseDown: (e: React.MouseEvent, id: string) => void
-}
-
 const EditorDataContext = createContext<EditorDataContextValue | null>(null)
 const EditorCommandsContext = createContext<EditorCommandsContextValue | null>(null)
-const EditorInteractionsContext = createContext<EditorInteractionsContextValue | null>(null)
 
 export function EditorProvider({ children }: { children: ReactNode }) {
   const [activeTool, setActiveTool] = useState<EditorToolId>('move')
@@ -42,18 +40,16 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     selectedElement,
     setSelectedId,
     addElement,
-    updateElement
+    updateElement,
+    moveElementLayer,
+    reorderElements,
+    setElementParent,
+    setElementParentAt
   } = useEditorState()
 
-  const { handleMouseDown, handleResizeMouseDown } = useInteractions({
-    selectedId,
-    activeTool,
-    editingTextId,
-    viewportOffset,
-    elements,
-    setSelectedId,
-    updateElement
-  })
+  const selectElement = useCallback((id: string | null) => {
+    setSelectedId(id)
+  }, [setSelectedId])
 
   const clearSelection = useCallback(() => {
     setSelectedId(null)
@@ -71,23 +67,21 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const commandsValue = useMemo<EditorCommandsContextValue>(() => ({
     addElement,
     updateElement,
+    moveElementLayer,
+    reorderElements,
+    setElementParent,
+    setElementParentAt,
+    selectElement,
     clearSelection,
     setActiveTool,
     setViewportOffset,
     setEditingTextId
-  }), [addElement, updateElement, clearSelection, setActiveTool, setViewportOffset, setEditingTextId])
-
-  const interactionsValue = useMemo<EditorInteractionsContextValue>(() => ({
-    handleMouseDown,
-    handleResizeMouseDown
-  }), [handleMouseDown, handleResizeMouseDown])
+  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, selectElement, clearSelection, setActiveTool, setViewportOffset, setEditingTextId])
 
   return (
     <EditorDataContext.Provider value={dataValue}>
       <EditorCommandsContext.Provider value={commandsValue}>
-        <EditorInteractionsContext.Provider value={interactionsValue}>
-          {children}
-        </EditorInteractionsContext.Provider>
+        {children}
       </EditorCommandsContext.Provider>
     </EditorDataContext.Provider>
   )
@@ -105,14 +99,6 @@ export function useEditorCommands() {
   const context = useContext(EditorCommandsContext)
   if (!context) {
     throw new Error('useEditorCommands must be used within EditorProvider')
-  }
-  return context
-}
-
-export function useEditorInteractions() {
-  const context = useContext(EditorInteractionsContext)
-  if (!context) {
-    throw new Error('useEditorInteractions must be used within EditorProvider')
   }
   return context
 }

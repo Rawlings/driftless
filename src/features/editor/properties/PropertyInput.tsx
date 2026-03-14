@@ -1,4 +1,5 @@
 import type { PropertyDefinition } from '../../../utils/propertyRegistry'
+import { cn, uiTokens } from '../ui/tokens'
 
 interface PropertyInputProps {
   property: PropertyDefinition
@@ -43,6 +44,9 @@ function toColorInputValue(value: unknown, fallback: string) {
 }
 
 export function PropertyInput({ property, value, onChange }: PropertyInputProps) {
+  const inputBaseClass = cn('mt-1', uiTokens.input.base, uiTokens.motion.control, uiTokens.input.hover, uiTokens.focus.ringSoft)
+  const selectBaseClass = cn(inputBaseClass, uiTokens.input.select)
+
   switch (property.type) {
     case 'number':
       return (
@@ -61,7 +65,7 @@ export function PropertyInput({ property, value, onChange }: PropertyInputProps)
             const parsed = Number(next)
             onChange(Number.isNaN(parsed) ? property.default : parsed)
           }}
-          className="w-full mt-1 border border-gray-300 rounded px-2 py-1"
+          className={inputBaseClass}
         />
       )
     case 'slider':
@@ -77,7 +81,7 @@ export function PropertyInput({ property, value, onChange }: PropertyInputProps)
               const parsed = Number(e.target.value)
               onChange(Number.isNaN(parsed) ? property.default : parsed)
             }}
-            className="w-full"
+            className="w-full cursor-pointer accent-blue-600 outline-none"
           />
           <div className="text-xs text-slate-500">{Number(value ?? property.default).toFixed(2)}</div>
         </div>
@@ -101,12 +105,12 @@ export function PropertyInput({ property, value, onChange }: PropertyInputProps)
               const nextNumeric = Number.isNaN(parsed) ? 0 : parsed
               onChange(`${nextNumeric}${activeUnit}`)
             }}
-            className="w-full border border-gray-300 rounded px-2 py-1"
+            className={cn('w-full', uiTokens.input.base, uiTokens.motion.control, uiTokens.input.hover, uiTokens.focus.ringSoft)}
           />
           <select
             value={activeUnit}
             onChange={(e) => onChange(`${numeric}${e.target.value}`)}
-            className="w-24 border border-gray-300 rounded px-2 py-1"
+            className={cn('w-24 px-2', uiTokens.input.base, uiTokens.motion.control, uiTokens.input.hover, uiTokens.input.select, uiTokens.focus.ringSoft)}
           >
             {allowedUnits.map((option) => (
               <option key={option} value={option}>{option}</option>
@@ -121,7 +125,7 @@ export function PropertyInput({ property, value, onChange }: PropertyInputProps)
           type="color"
           value={toColorInputValue(value, '#000000')}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full mt-1"
+          className={cn('mt-1 w-full', uiTokens.input.base, uiTokens.motion.control, uiTokens.input.hover, uiTokens.input.color, uiTokens.focus.ringSoft)}
         />
       )
     case 'select':
@@ -129,7 +133,7 @@ export function PropertyInput({ property, value, onChange }: PropertyInputProps)
         <select
           value={value ?? property.default}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full mt-1 border border-gray-300 rounded px-2 py-1"
+          className={selectBaseClass}
         >
           {property.options?.map(opt => (
             <option key={opt} value={opt}>{opt}</option>
@@ -142,7 +146,7 @@ export function PropertyInput({ property, value, onChange }: PropertyInputProps)
           type="text"
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full mt-1 border border-gray-300 rounded px-2 py-1"
+          className={inputBaseClass}
         />
       )
     default:

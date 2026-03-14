@@ -1,25 +1,34 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { Rnd } from 'react-rnd'
 import type { Element } from '../../../core/editor/types'
-import { useEditorCommands, useEditorData, useEditorInteractions } from '../state/EditorContext'
+import { useEditorCommands, useEditorData } from '../state/EditorContext'
 
 interface ElementRendererProps {
   element: Element
   isSelected: boolean
+  children?: ReactNode
 }
 
 export function ElementRenderer({
   element,
-  isSelected
+  isSelected,
+  children
 }: ElementRendererProps) {
-  const { handleMouseDown, handleResizeMouseDown } = useEditorInteractions()
   const { activeTool, editingTextId } = useEditorData()
-  const { setEditingTextId, updateElement } = useEditorCommands()
+  const { selectElement, setEditingTextId, updateElement } = useEditorCommands()
   const textEditorRef = useRef<HTMLDivElement | null>(null)
 
   const elementCursorClass = activeTool === 'move' ? 'cursor-move' : 'cursor-default'
   const selectionOutlineClass = element.type === 'circle' ? 'rounded-full' : 'rounded-md'
   const textMode = String(element.styles.textMode ?? 'auto')
   const isEditingText = element.type === 'text' && editingTextId === element.id
+
+  const left = Number(element.styles.left ?? 0)
+  const top = Number(element.styles.top ?? 0)
+  const width = element.styles.width ?? (element.type === 'text' ? 'auto' : 100)
+  const height = element.styles.height ?? (element.type === 'text' ? 'auto' : 100)
+
+  const canTransform = activeTool === 'move' && !isEditingText
 
   useEffect(() => {
     if (!isEditingText) {
@@ -60,20 +69,55 @@ export function ElementRenderer({
   }
 
   return (
-    <div
-      data-editor-element="true"
-      onMouseDown={(e) => handleMouseDown(e, element.id)}
-      onClick={(e) => e.stopPropagation()}
-      onDoubleClick={(e) => {
-        if (element.type !== 'text') {
-          return
-        }
+    <Rnd
+      size={{ width, height }}
+      position={{ x: left, y: top }}
+      disableDragging={!canTransform}
+      enableResizing={isSelected && canTransform
+        ? {
+            bottomRight: true
+          }
+        : false}
+      onMouseDown={(e) => {
         e.stopPropagation()
-        setEditingTextId(element.id)
+        selectElement(element.id)
       }}
-      className={elementCursorClass}
-      style={element.styles}
+      onDragStop={(_, data) => {
+        updateElement(element.id, {
+          styles: {
+            ...element.styles,
+            left: data.x,
+            top: data.y
+          }
+        })
+      }}
+      onResizeStop={(_, __, ref, ___, position) => {
+        updateElement(element.id, {
+          styles: {
+            ...element.styles,
+            left: position.x,
+            top: position.y,
+            width: ref.offsetWidth,
+            height: ref.offsetHeight
+          }
+        })
+      }}
+      className="data-editor-element"
+      style={{ zIndex: isSelected ? 3 : 1 }}
     >
+      <div
+        data-editor-element="true"
+        onClick={(e) => e.stopPropagation()}
+        onDoubleClick={(e) => {
+          if (element.type !== 'text') {
+            return
+          }
+          e.stopPropagation()
+          setEditingTextId(element.id)
+        }}
+        className={`relative h-full w-full ${elementCursorClass}`}
+        style={{ ...element.styles, left: undefined, top: undefined, width: '100%', height: '100%' }}
+      >
       {element.type === 'text' ? (
         <div
           ref={textEditorRef}
@@ -109,8 +153,6 @@ export function ElementRenderer({
 
       {isSelected && activeTool === 'move' && !isEditingText && (
         <div
-          onMouseDown={(e) => handleResizeMouseDown(e, element.id)}
-          onClick={(e) => e.stopPropagation()}
           className="absolute -bottom-2 -right-2 flex h-5 w-5 cursor-se-resize items-center justify-center rounded-full border-2 border-blue-500 bg-white shadow-md"
           title="Resize"
           aria-label="Resize element"
@@ -118,6 +160,9 @@ export function ElementRenderer({
           <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
         </div>
       )}
-    </div>
+
+      {children}
+      </div>
+    </Rnd>
   )
 }

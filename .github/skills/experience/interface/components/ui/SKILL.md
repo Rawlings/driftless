@@ -21,6 +21,7 @@ metadata:
 - Standardize control patterns for buttons, groups, and panel sections.
 - Build reusable property control primitives for slider, color, select, unit input, and syntax text.
 - Keep metadata-driven renderer components decoupled from property-specific logic.
+- Use a single icon package for editor UI iconography (prefer `lucide-react` line icons) rather than ad-hoc inline SVG snippets.
 
 ## Acceptance Criteria
 
@@ -29,3 +30,4 @@ metadata:
 - Keyboard and focus behavior are predictable for all interactive controls.
 - New UI follows the RUI shell pattern and panel/button styling conventions.
 - Property UI additions reuse shared control primitives and mapping rules.
+- Icon sizing, stroke weight, and interaction states remain consistent across toolbar and side panels.

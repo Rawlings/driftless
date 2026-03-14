@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ChevronDown, ChevronLeft, Minus } from 'lucide-react'
 import { getPropertyRegistry, groupProperties } from '../../../utils/propertyRegistry'
 import { PropertyInput } from './PropertyInput'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
+import { cn, uiTokens } from '../ui/tokens'
 
 export function PropertiesPanel() {
   const { selectedElement } = useEditorData()
@@ -57,19 +59,25 @@ export function PropertiesPanel() {
         type="button"
         aria-label="Expand properties panel"
         title="Expand properties panel"
-        className="fixed right-4 top-1/2 z-40 -translate-y-1/2 rounded-l-xl border border-slate-300 bg-white px-2 py-3 text-slate-700 shadow"
+        className={cn(
+          'fixed right-4 top-1/2 z-40 -translate-y-1/2 rounded-l-xl px-2 py-3',
+          uiTokens.control.iconButton,
+          uiTokens.motion.control,
+          uiTokens.control.iconButtonHover,
+          uiTokens.control.iconButtonActive,
+          uiTokens.focus.ring,
+          'border-slate-300 bg-white shadow'
+        )}
         onClick={() => setIsMinimized(false)}
       >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-          <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronLeft className="h-5 w-5" aria-hidden="true" />
       </button>
     )
   }
 
   return (
     <aside
-      className="fixed right-4 top-4 bottom-4 z-30 rounded-2xl border border-slate-200 bg-white shadow-xl"
+      className={cn('fixed right-4 top-4 bottom-4 z-30', uiTokens.shell.panel, uiTokens.motion.panel)}
       style={{ width }}
     >
       <div
@@ -79,17 +87,22 @@ export function PropertiesPanel() {
 
       <div className="flex h-full flex-col">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-          <h3 className="text-base font-semibold text-slate-800">Properties</h3>
+          <h3 className={uiTokens.text.heading}>Properties</h3>
           <button
             type="button"
             aria-label="Minimize properties panel"
             title="Minimize properties panel"
-            className="rounded-md border border-slate-200 p-1.5 text-slate-700 hover:bg-slate-50"
+            className={cn(
+              uiTokens.control.iconButton,
+              uiTokens.motion.control,
+              uiTokens.control.iconButtonHover,
+              uiTokens.control.iconButtonActive,
+              uiTokens.focus.ring,
+              'p-1.5'
+            )}
             onClick={() => setIsMinimized(true)}
           >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-              <path d="M6 12 H18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Minus className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -98,14 +111,24 @@ export function PropertiesPanel() {
             <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1">
               <button
                 type="button"
-                className={`rounded-md px-3 py-1.5 text-xs font-medium ${mode === 'common' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
+                className={cn(
+                  uiTokens.control.chip,
+                  uiTokens.motion.control,
+                  uiTokens.focus.ring,
+                  mode === 'common' ? uiTokens.control.chipSelected : uiTokens.control.chipIdle
+                )}
                 onClick={() => setMode('common')}
               >
                 Common
               </button>
               <button
                 type="button"
-                className={`rounded-md px-3 py-1.5 text-xs font-medium ${mode === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
+                className={cn(
+                  uiTokens.control.chip,
+                  uiTokens.motion.control,
+                  uiTokens.focus.ring,
+                  mode === 'all' ? uiTokens.control.chipSelected : uiTokens.control.chipIdle
+                )}
                 onClick={() => setMode('all')}
               >
                 All
@@ -117,7 +140,7 @@ export function PropertiesPanel() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search properties"
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className={cn(uiTokens.input.base, uiTokens.motion.control, uiTokens.input.hover, uiTokens.focus.ringSoft)}
             />
           </div>
 
@@ -126,8 +149,11 @@ export function PropertiesPanel() {
           ) : (
             <div className="space-y-4">
               {Object.entries(grouped).map(([group, props]) => (
-                <details key={group} className="overflow-hidden rounded-lg border border-slate-200">
-                  <summary className="cursor-pointer bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700">{group}</summary>
+                <details key={group} className={cn(uiTokens.accordion.details, 'group')}>
+                  <summary className={cn(uiTokens.accordion.summary, uiTokens.motion.control, uiTokens.accordion.summaryHover, uiTokens.accordion.summaryFocus, 'flex items-center justify-between')}>
+                    <span>{group}</span>
+                    <ChevronDown className={uiTokens.accordion.chevron} aria-hidden="true" />
+                  </summary>
                   <div className="space-y-2 p-3">
                     {props.map(prop => (
                       <div key={prop.name}>

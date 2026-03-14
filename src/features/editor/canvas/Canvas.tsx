@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useDrag } from '@use-gesture/react'
 import { ElementRenderer } from './ElementRenderer'
+import type { Element } from '../../../core/editor/types'
 import { isShapeTool, isTextTool } from '../../../core/editor/tools'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
 
@@ -28,27 +30,56 @@ export function Canvas() {
   const [isPanning, setIsPanning] = useState(false)
   const [creatingShape, setCreatingShape] = useState<CreatingShapeState | null>(null)
   const [creatingText, setCreatingText] = useState<CreatingTextState | null>(null)
-  const panStartMouseRef = useRef({ x: 0, y: 0 })
-  const panStartOffsetRef = useRef({ x: 0, y: 0 })
+
+  const childrenByParent = useMemo(() => {
+    const map = new Map<string | null, Element[]>()
+    elements.forEach((element) => {
+      const key = element.parentId ?? null
+      const group = map.get(key)
+      if (group) {
+        group.push(element)
+      } else {
+        map.set(key, [element])
+      }
+    })
+    return map
+  }, [elements])
+
+  const bindPan = useDrag(
+    ({ first, last, movement: [mx, my], memo, event }) => {
+      const pointerEvent = event as MouseEvent
+      const isMiddleMousePan = (pointerEvent.buttons & 4) === 4
+      const allowPan = activeTool === 'hand' || isMiddleMousePan
+      const panMemo = (memo ?? { x: viewportOffset.x, y: viewportOffset.y }) as { x: number; y: number }
+
+      if (!allowPan) {
+        return panMemo
+      }
+
+      event.preventDefault()
+
+      if (first) {
+        setIsPanning(true)
+        return { x: viewportOffset.x, y: viewportOffset.y }
+      }
+
+      setViewportOffset({
+        x: panMemo.x + mx,
+        y: panMemo.y + my
+      })
+
+      if (last) {
+        setIsPanning(false)
+      }
+
+      return panMemo
+    },
+    { filterTaps: true }
+  )
 
   const handleCanvasMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement
     const isElementTarget = Boolean(target.closest('[data-editor-element="true"]'))
-
-    if (e.button === 1) {
-      e.preventDefault()
-      panStartMouseRef.current = { x: e.clientX, y: e.clientY }
-      panStartOffsetRef.current = viewportOffset
-      setIsPanning(true)
-      return
-    }
-
-    if (activeTool === 'hand') {
-      panStartMouseRef.current = { x: e.clientX, y: e.clientY }
-      panStartOffsetRef.current = viewportOffset
-      setIsPanning(true)
-      return
-    }
 
     if (e.button !== 0) {
       return
@@ -261,42 +292,6 @@ export function Canvas() {
     }
   }, [creatingText, elements, setActiveTool, setEditingTextId, updateElement, viewportOffset.x, viewportOffset.y])
 
-  useEffect(() => {
-    if (!isPanning) {
-      return
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const dx = e.clientX - panStartMouseRef.current.x
-      const dy = e.clientY - panStartMouseRef.current.y
-      setViewportOffset({
-        x: panStartOffsetRef.current.x + dx,
-        y: panStartOffsetRef.current.y + dy
-      })
-    }
-
-    const handleMouseUp = () => {
-      setIsPanning(false)
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-
-    // Prevent browser auto-scroll behavior for middle-mouse drag.
-    const preventAuxClick = (e: MouseEvent) => {
-      if (e.button === 1) {
-        e.preventDefault()
-      }
-    }
-    window.addEventListener('mousedown', preventAuxClick)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-      window.removeEventListener('mousedown', preventAuxClick)
-    }
-  }, [isPanning, setViewportOffset])
-
   const canvasCursorClass = activeTool === 'hand'
     ? (isPanning ? 'cursor-grabbing' : 'cursor-grab')
     : isShapeTool(activeTool)
@@ -307,19 +302,29 @@ export function Canvas() {
     <div
       data-editor-stage="true"
       className={`absolute inset-0 bg-gray-100 ${canvasCursorClass}`}
+      onAuxClick={(e) => {
+        if (e.button === 1) {
+          e.preventDefault()
+        }
+      }}
       onMouseDown={handleCanvasMouseDown}
+      {...bindPan()}
     >
       <div
         className="absolute inset-0"
         style={{ transform: `translate(${viewportOffset.x}px, ${viewportOffset.y}px)` }}
       >
-        {elements.map(element => (
-          <ElementRenderer
-            key={element.id}
-            element={element}
-            isSelected={selectedId === element.id}
-          />
-        ))}
+        {(childrenByParent.get(null) ?? []).map(function renderElement(element) {
+          return (
+            <ElementRenderer
+              key={element.id}
+              element={element}
+              isSelected={selectedId === element.id}
+            >
+              {(childrenByParent.get(element.id) ?? []).map((child) => renderElement(child))}
+            </ElementRenderer>
+          )
+        })}
       </div>
     </div>
   )

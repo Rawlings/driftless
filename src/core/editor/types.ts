@@ -1,6 +1,7 @@
 export interface Element {
   id: string
   type: 'line' | 'circle' | 'square' | 'text'
+  parentId?: string | null
   styles: { [key: string]: any }
 }
 
