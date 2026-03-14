@@ -1,23 +1,34 @@
-# Welcome to Rui!
+# Rui - WYSIWYG Web Design Editor
 
-A modern, production-ready template for building React applications using Vite and React Router.
+A comprehensive, scalable WYSIWYG editor that supports the **entire CSS API**, empowering designers and developers to create pixel-perfect web designs visually.
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
+## Vision
+
+Build the most powerful web-based design tool that enables visual creation of anything that can be built with CSS - from basic layouts to advanced animations and effects. See [VISION.md](VISION.md) for the complete vision statement.
+
 ## Features
 
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Client-side routing with React Router
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- 🎨 **Complete CSS API Support**: Every CSS property, value, and selector
+- ⚡ **Real-Time Visual Editing**: Drag-and-drop interface with instant preview
+- 🏗️ **Scalable Architecture**: Agent-based development with specialized skills
+- 🎯 **Professional Tools**: Layers, undo/redo, responsive design, themes
+- 📤 **Export Capabilities**: Generate production-ready HTML/CSS
+- ♿ **Accessibility First**: WCAG compliant with built-in a11y features
+- 🚀 **Performance Optimized**: Smooth 60fps interactions with complex designs
+
+## Tech Stack
+
+- **Frontend**: React 18, TypeScript, Tailwind CSS
+- **Build Tool**: Vite with HMR
+- **Routing**: React Router
+- **Deployment**: GitHub Pages with CI/CD
+- **Architecture**: Agent-based with skill-driven workflows
 
 ## Getting Started
 
 ### Installation
-
-Install the dependencies:
 
 ```bash
 npm install
@@ -25,29 +36,48 @@ npm install
 
 ### Development
 
-Start the development server with HMR:
-
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Visit `http://localhost:5173` to see the editor.
 
-## Building for Production
-
-Create a production build:
+### Building
 
 ```bash
 npm run build
 ```
 
-## Deployment
+## Architecture
 
-This app is configured for deployment to GitHub Pages. The CI/CD workflows will automatically build and deploy on pushes to the `main` branch.
+This project uses a unique agent-based architecture:
 
-For other static hosting platforms (Netlify, Vercel, etc.), upload the contents of the `dist/` directory.
+- **Agents**: Specialized components for different editor aspects (UI, Canvas, Properties, etc.)
+- **Skills**: Workflow definitions for implementing features systematically
+- **Orchestration**: Coordinated multi-agent workflows for complex features
 
-## Styling
+See [.github/AGENTS.md](.github/AGENTS.md) and [.github/skills/](.github/skills/) for details.
+
+## Contributing
+
+This project welcomes contributions! The agent-based architecture makes it easy to add new features:
+
+1. Identify the appropriate agent/skill
+2. Follow the workflow steps
+3. Test thoroughly
+4. Update documentation
+
+## Roadmap
+
+- [x] Basic editor with shapes and interactions
+- [ ] Full CSS API support
+- [ ] Advanced features (animations, themes, layers)
+- [ ] Professional export capabilities
+- [ ] Plugin ecosystem
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
 
