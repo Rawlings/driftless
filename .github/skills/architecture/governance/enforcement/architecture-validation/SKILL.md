@@ -17,6 +17,7 @@ metadata:
 - Policy source: skill guardrails and repository documentation.
 - Enforcement mechanism: PR review checklist + required build/typecheck status.
 - Verification: no runtime code under forbidden patterns (for this repo: no `src/agents`).
+- Dependency validation: package-audit evidence for new infrastructure concerns and explicit rationale for custom implementations.
 
 ## Acceptance Checks
 
@@ -26,3 +27,5 @@ metadata:
 - `npm run typecheck` and `npm run build` succeed.
 - Advanced property coverage is dependency-driven from metadata sources.
 - UI controls are mapped via shared rules, not ad-hoc per-property branching.
+- New generic infrastructure work documents package options considered before custom code.
+- Custom infrastructure includes explicit justification, risk notes, and maintenance ownership.

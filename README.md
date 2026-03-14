@@ -1,31 +1,46 @@
 # RUI
 
-RUI is a visual design editor for building interface layouts and styling directly on a live canvas.
+RUI is the kind of design editor you open once and immediately feel momentum.
+
+It is fast when you are exploring, precise when you are refining, and flexible when you are pushing beyond the obvious. You can move from rough layout to highly polished interface styling without context switching into a dozen disconnected tools.
 
 ## Live Site
 
 https://rawlings.github.io/rui/
 
-## What RUI Focuses On
+## Why RUI Feels Powerful
 
-- Direct manipulation editing with immediate visual feedback
-- Common-first property controls with scalable advanced CSS coverage
-- Metadata-driven styling infrastructure for broad CSS support
-- Product-oriented architecture designed for long-term maintainability
+RUI is built for high-velocity design work. You are not stuck in a shallow layer of controls. You can start simple and keep going deeper without hitting hard limits.
+
+- Immediate canvas feedback while editing
+- Fast common controls for day-to-day design flow
+- Advanced styling range when you need exact visual control
+- Interaction model tuned for real design speed
+- Product architecture designed to scale with ambitious features
+
+## The Experience
+
+RUI is intentionally direct. Tools are where you expect them. Selection behavior is clear. Editing is responsive. Layered styling and nuanced visual treatment remain within reach instead of hidden behind fragile workarounds.
+
+The goal is to keep creative momentum high. You should be able to move quickly, make bold decisions, and still retain precision all the way to production-level polish.
+
+## What You Can Do In Practice
+
+- Compose interfaces visually on a live canvas
+- Shape and refine layouts with precise direct-manipulation workflows
+- Work with broad styling capabilities from basic to advanced
+- Build richer visual systems without losing structural clarity
+- Iterate quickly while preserving reliable editor behavior
 
 ## Product Direction
 
-RUI is built to make advanced web styling approachable without removing the flexibility of real CSS. The editor prioritizes fast interaction, clear structure, and reliable state behavior as complexity grows.
+RUI is aimed at teams and makers who care about both speed and quality. It is not trying to be a toy. It is being shaped as a serious design environment where advanced styling, responsive decisions, and fine-grained control can coexist with a workflow that still feels light and fast.
 
-## Architecture Overview
-
-- Feature-oriented runtime modules under `src/features`, `src/core`, `src/hooks`, and `src/components`
-- Metadata-backed property registry and control mapping for scalable CSS expansion
-- Explicit architecture guardrails and implementation standards under `.github/skills/`
+As the editor evolves, the focus remains the same: remove friction, increase creative range, and keep the path from idea to polished interface as short and as smooth as possible.
 
 ## Contributing
 
-Contributions are welcome. Keep changes focused, align with architecture guardrails, and update documentation when behavior or structure changes.
+Contributions are welcome. Keep changes focused, align with architecture and UX guardrails, and update documentation when behavior evolves.
 
 ## License
 

@@ -11,6 +11,7 @@ metadata:
 - Provide explicit control over stacking order and visual hierarchy.
 - Keep layer operations reversible and predictable.
 - Ensure selected layer state stays synchronized with canvas selection.
+- Use `experience/authoring/layers/layer-tree/SKILL.md` for tree structure architecture and hierarchy synchronization constraints.
 
 ## Implementation Workflow
 

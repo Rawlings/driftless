@@ -19,13 +19,19 @@ This directory is organized by high-level architecture domains with deeper nesti
 - architecture/governance/enforcement/architecture-validation/SKILL.md
 - architecture/state/history/undo-redo/SKILL.md
 - experience/authoring/canvas/interactions/SKILL.md
+- experience/authoring/layers/layer-tree/SKILL.md
 - experience/authoring/layers/management/SKILL.md
 - experience/authoring/shapes/management/SKILL.md
 - experience/interface/components/ui/SKILL.md
 - experience/interface/design-system/rui-ui-style/SKILL.md
 - experience/interface/properties/editing/SKILL.md
 - experience/interface/properties/metadata-control-mapping/SKILL.md
+- experience/interface/toolbar/creation-tools/SKILL.md
+- experience/interface/toolbar/move-tools/SKILL.md
 - experience/interface/toolbar/pro-design-tools/SKILL.md
+- experience/interface/toolbar/region-tools/SKILL.md
+- experience/interface/toolbar/shape-tools/SKILL.md
+- experience/interface/toolbar/text-tool/SKILL.md
 - styling/advanced/css-api/expansion/SKILL.md
 - styling/advanced/css-api/mdn-driven-registry/SKILL.md
 - styling/motion/animations/SKILL.md
@@ -49,6 +55,8 @@ This directory is organized by high-level architecture domains with deeper nesti
 - Agent terminology is workflow-only and belongs in documentation or Copilot skill/agent configuration, not product runtime folders.
 - Every refactor must remove dead paths and stale imports in the same change.
 - Moves must be completed end-to-end: relocate files, update imports, delete obsolete folders, and validate with build and diagnostics.
+- For non-differentiating infrastructure, audit mature NPM packages before implementing custom solutions.
+- If custom infrastructure is selected, document package options considered and why custom code is the better fit.
 
 ## MDN-Driven Guardrails
 

@@ -11,6 +11,7 @@ metadata:
 - Keep runtime architecture product-oriented: `src/features`, `src/core`, `src/hooks`, `src/components`.
 - Prevent anti-patterns that degrade scale, especially state prop drilling across feature trees.
 - Ensure refactors are complete: no dead folders, no stale imports, no mixed old/new structures.
+- Prioritize proven dependencies for non-differentiating infrastructure to reduce custom maintenance burden.
 
 ## Guardrails
 
@@ -21,6 +22,14 @@ metadata:
 - Prefer metadata-driven registries over manually enumerated advanced property catalogs.
 - Separate curated common UX from generated advanced coverage to scale safely.
 - Treat control mapping as a first-class architecture layer with explicit ownership.
+- For pointer-heavy features, define a single interaction state model before implementation.
+- Keep event ownership explicit so one gesture maps to one handler chain.
+- Keep world and screen coordinate transforms centralized and reusable.
+- Do not couple selection-clearing logic to creation gestures in separate event phases.
+- Require regression checks for create, select, drag, resize, and pan after any input-system changes.
+- Apply dependency-first delivery for generic concerns (input gestures, drag and drop, keyboard shortcuts, parsing, validation, tree virtualization, export helpers).
+- Before writing custom infrastructure, run a package audit and evaluate mature options by maintenance health, bundle impact, API fit, and browser behavior coverage.
+- If custom implementation is chosen, document why in the change summary and identify an owner for long-term maintenance.
 
 ## Review Checklist
 
@@ -30,3 +39,5 @@ metadata:
 - Do typecheck and build pass after refactor?
 - Are advanced CSS properties sourced from metadata, not hardcoded lists?
 - Is there a documented mapping from metadata to control primitives?
+- Was an NPM package audit performed for new non-core infrastructure?
+- If custom code was chosen, is there a documented justification and maintenance plan?

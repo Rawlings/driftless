@@ -1,36 +1,68 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Element } from '../../core/editor/types'
+import type { EditorToolId } from '../../core/editor/tools'
 
 interface UseInteractionsProps {
   selectedId: string | null
+  activeTool: EditorToolId
+  editingTextId: string | null
+  viewportOffset: { x: number; y: number }
   elements: Element[]
   setSelectedId: (id: string | null) => void
   updateElement: (id: string, updates: Partial<Element>) => void
 }
 
-export function useInteractions({ selectedId, elements, setSelectedId, updateElement }: UseInteractionsProps) {
+export function useInteractions({ selectedId, activeTool, editingTextId, viewportOffset, elements, setSelectedId, updateElement }: UseInteractionsProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 })
 
   const handleMouseDown = useCallback((e: React.MouseEvent, id: string) => {
+    if (activeTool !== 'move') {
+      return
+    }
+
+    if (editingTextId === id) {
+      return
+    }
+
+    if (e.button !== 0) {
+      return
+    }
+
     e.stopPropagation()
+
     const el = elements.find(el => el.id === id)
     if (el) {
       const left = Number(el.styles.left ?? el.styles.x ?? 0)
       const top = Number(el.styles.top ?? el.styles.y ?? 0)
+      const worldX = e.clientX - viewportOffset.x
+      const worldY = e.clientY - viewportOffset.y
       setSelectedId(id)
       setIsDragging(true)
       setDragOffset({
-        x: e.clientX - left,
-        y: e.clientY - top
+        x: worldX - left,
+        y: worldY - top
       })
     }
-  }, [elements, setSelectedId])
+  }, [activeTool, editingTextId, elements, setSelectedId, viewportOffset.x, viewportOffset.y])
 
   const handleResizeMouseDown = useCallback((e: React.MouseEvent, id: string) => {
+    if (activeTool !== 'move') {
+      return
+    }
+
+    if (editingTextId === id) {
+      return
+    }
+
+    if (e.button !== 0) {
+      return
+    }
+
     e.stopPropagation()
+
     const el = elements.find(el => el.id === id)
     if (el) {
       setSelectedId(id)
@@ -42,12 +74,14 @@ export function useInteractions({ selectedId, elements, setSelectedId, updateEle
         height: el.styles.height
       })
     }
-  }, [elements, setSelectedId])
+  }, [activeTool, editingTextId, elements, setSelectedId])
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (isDragging && selectedId) {
-      const newX = e.clientX - dragOffset.x
-      const newY = e.clientY - dragOffset.y
+      const worldX = e.clientX - viewportOffset.x
+      const worldY = e.clientY - viewportOffset.y
+      const newX = worldX - dragOffset.x
+      const newY = worldY - dragOffset.y
       const el = elements.find(el => el.id === selectedId)
       if (!el) {
         return
@@ -62,7 +96,7 @@ export function useInteractions({ selectedId, elements, setSelectedId, updateEle
       const newHeight = Math.max(10, resizeStart.height + (e.clientY - resizeStart.y))
       updateElement(selectedId, { styles: { ...el.styles, width: newWidth, height: newHeight } })
     }
-  }, [isDragging, isResizing, selectedId, dragOffset, resizeStart, elements, updateElement])
+  }, [isDragging, isResizing, selectedId, dragOffset, resizeStart, elements, updateElement, viewportOffset.x, viewportOffset.y])
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)
