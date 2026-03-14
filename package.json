@@ -1,6 +1,30 @@
 {
   "name": "rui",
+  "version": "0.1.0",
+  "description": "RUI is a visual design editor for building interface layouts and styles on a live canvas.",
   "private": true,
+  "license": "MIT",
+  "author": "RUI Contributors",
+  "homepage": "https://rawlings.github.io/rui/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rawlings/rui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rawlings/rui/issues"
+  },
+  "keywords": [
+    "visual-editor",
+    "css",
+    "design-tool",
+    "react",
+    "vite",
+    "wysiwyg"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "npm@10",
   "type": "module",
   "scripts": {
     "build": "vite build",
@@ -10,6 +34,7 @@
   "dependencies": {
     "@vitejs/plugin-react": "^4.7.0",
     "isbot": "^5.1.31",
+    "mdn-data": "^2.27.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "7.12.0",

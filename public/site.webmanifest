@@ -1,0 +1,17 @@
+{
+  "name": "RUI",
+  "short_name": "RUI",
+  "description": "Visual design editor for interface layouts and CSS-driven styling.",
+  "start_url": "/rui/",
+  "scope": "/rui/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -9,12 +9,12 @@ export function Welcome() {
           <div className="w-[500px] max-w-[100vw] p-4">
             <img
               src={logoLight}
-              alt="React Router"
+              alt="RUI"
               className="block w-full dark:hidden"
             />
             <img
               src={logoDark}
-              alt="React Router"
+              alt="RUI"
               className="hidden w-full dark:block"
             />
           </div>
@@ -48,8 +48,8 @@ export function Welcome() {
 
 const resources = [
   {
-    href: "https://reactrouter.com/docs",
-    text: "React Router Docs",
+    href: "https://rawlings.github.io/rui/",
+    text: "RUI Live Site",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -68,8 +68,8 @@ const resources = [
     ),
   },
   {
-    href: "https://rmx.as/discord",
-    text: "Join Discord",
+    href: "https://www.w3.org/TR/CSS/",
+    text: "CSS Specification",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

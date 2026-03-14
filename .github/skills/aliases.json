@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-14",
+  "aliases": {
+    "accessibility": "quality/accessibility/wcag/SKILL.md",
+    "agent-orchestration": "architecture/coordination/workflows/agent-orchestration/SKILL.md",
+    "architecture-validation": "architecture/governance/enforcement/architecture-validation/SKILL.md",
+    "animations": "styling/motion/animations/SKILL.md",
+    "canvas-interactions": "experience/authoring/canvas/interactions/SKILL.md",
+    "css-api-expansion": "styling/advanced/css-api/expansion/SKILL.md",
+    "css-metadata": "styling/advanced/css-api/mdn-driven-registry/SKILL.md",
+    "export-import": "data/serialization/export-import/SKILL.md",
+    "integration": "architecture/coordination/system-integration/SKILL.md",
+    "layers-management": "experience/authoring/layers/management/SKILL.md",
+    "orchestration": "architecture/coordination/multi-agent/orchestration/SKILL.md",
+    "guardrails": "architecture/governance/scalability/guardrails/SKILL.md",
+    "performance-optimization": "quality/performance/optimization/SKILL.md",
+    "property-control-mapping": "experience/interface/properties/metadata-control-mapping/SKILL.md",
+    "properties-editing": "experience/interface/properties/editing/SKILL.md",
+    "metadata-control-mapping": "experience/interface/properties/metadata-control-mapping/SKILL.md",
+    "rui-ui-style": "experience/interface/design-system/rui-ui-style/SKILL.md",
+    "toolbar-tools": "experience/interface/toolbar/pro-design-tools/SKILL.md",
+    "pro-design-tools": "experience/interface/toolbar/pro-design-tools/SKILL.md",
+    "ui-style": "experience/interface/design-system/rui-ui-style/SKILL.md",
+    "responsive-design": "styling/system/responsive-design/SKILL.md",
+    "shapes-management": "experience/authoring/shapes/management/SKILL.md",
+    "mdn-driven-registry": "styling/advanced/css-api/mdn-driven-registry/SKILL.md",
+    "testing": "quality/testing/automation/SKILL.md",
+    "themes": "styling/system/themes/SKILL.md",
+    "ui-components": "experience/interface/components/ui/SKILL.md",
+    "undo-redo": "architecture/state/history/undo-redo/SKILL.md"
+  }
+}

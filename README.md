@@ -1,86 +1,32 @@
-# Rui - WYSIWYG Web Design Editor
+# RUI
 
-A comprehensive, scalable WYSIWYG editor that supports the **entire CSS API**, empowering designers and developers to create pixel-perfect web designs visually.
+RUI is a visual design editor for building interface layouts and styling directly on a live canvas.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Live Site
 
-## Vision
+https://rawlings.github.io/rui/
 
-Build the most powerful web-based design tool that enables visual creation of anything that can be built with CSS - from basic layouts to advanced animations and effects. See [VISION.md](VISION.md) for the complete vision statement.
+## What RUI Focuses On
 
-## Features
+- Direct manipulation editing with immediate visual feedback
+- Common-first property controls with scalable advanced CSS coverage
+- Metadata-driven styling infrastructure for broad CSS support
+- Product-oriented architecture designed for long-term maintainability
 
-- 🎨 **Complete CSS API Support**: Every CSS property, value, and selector
-- ⚡ **Real-Time Visual Editing**: Drag-and-drop interface with instant preview
-- 🏗️ **Scalable Architecture**: Agent-based development with specialized skills
-- 🎯 **Professional Tools**: Layers, undo/redo, responsive design, themes
-- 📤 **Export Capabilities**: Generate production-ready HTML/CSS
-- ♿ **Accessibility First**: WCAG compliant with built-in a11y features
-- 🚀 **Performance Optimized**: Smooth 60fps interactions with complex designs
+## Product Direction
 
-## Tech Stack
+RUI is built to make advanced web styling approachable without removing the flexibility of real CSS. The editor prioritizes fast interaction, clear structure, and reliable state behavior as complexity grows.
 
-- **Frontend**: React 18, TypeScript, Tailwind CSS
-- **Build Tool**: Vite with HMR
-- **Routing**: React Router
-- **Deployment**: GitHub Pages with CI/CD
-- **Architecture**: Agent-based with skill-driven workflows
+## Architecture Overview
 
-## Getting Started
-
-### Installation
-
-```bash
-npm install
-```
-
-### Development
-
-```bash
-npm run dev
-```
-
-Visit `http://localhost:5173` to see the editor.
-
-### Building
-
-```bash
-npm run build
-```
-
-## Architecture
-
-This project uses a unique agent-based architecture:
-
-- **Agents**: Specialized components for different editor aspects (UI, Canvas, Properties, etc.)
-- **Skills**: Workflow definitions for implementing features systematically
-- **Orchestration**: Coordinated multi-agent workflows for complex features
-
-See [.github/AGENTS.md](.github/AGENTS.md) and [.github/skills/](.github/skills/) for details.
+- Feature-oriented runtime modules under `src/features`, `src/core`, `src/hooks`, and `src/components`
+- Metadata-backed property registry and control mapping for scalable CSS expansion
+- Explicit architecture guardrails and implementation standards under `.github/skills/`
 
 ## Contributing
 
-This project welcomes contributions! The agent-based architecture makes it easy to add new features:
-
-1. Identify the appropriate agent/skill
-2. Follow the workflow steps
-3. Test thoroughly
-4. Update documentation
-
-## Roadmap
-
-- [x] Basic editor with shapes and interactions
-- [ ] Full CSS API support
-- [ ] Advanced features (animations, themes, layers)
-- [ ] Professional export capabilities
-- [ ] Plugin ecosystem
+Contributions are welcome. Keep changes focused, align with architecture guardrails, and update documentation when behavior or structure changes.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router and Vite.
+MIT. See [LICENSE](LICENSE).
