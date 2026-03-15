@@ -23,7 +23,6 @@ This directory is organized by high-level architecture domains with deeper nesti
 - experience/authoring/layers/management/SKILL.md
 - experience/authoring/shapes/management/SKILL.md
 - experience/interface/components/ui/SKILL.md
-- experience/interface/design-system/rui-ui-style/SKILL.md
 - experience/interface/properties/editing/SKILL.md
 - experience/interface/properties/metadata-control-mapping/SKILL.md
 - experience/interface/toolbar/creation-tools/SKILL.md

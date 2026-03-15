@@ -1,4 +1,5 @@
 import { extractNumericRange, inferSyntaxFamilies, type SyntaxFamily } from './propertySyntaxClassifier'
+import mdnUnits from 'mdn-data/css/units.json'
 
 export type PropertyControlType = 'number' | 'unit-number' | 'slider' | 'color' | 'select' | 'text'
 export type UnitValueType = 'length' | 'length-percentage' | 'percentage' | 'time' | 'angle'
@@ -18,6 +19,8 @@ interface InferControlConfigParams {
   property: string
   syntax: string
   options?: string[]
+  keywordOptions?: string[]
+  keywordOnly?: boolean
 }
 
 interface MappingContext {
@@ -25,6 +28,8 @@ interface MappingContext {
   syntax: string
   families: Set<SyntaxFamily>
   options?: string[]
+  keywordOptions: string[]
+  keywordOnly: boolean
   range: { min?: number; max?: number }
 }
 
@@ -34,14 +39,20 @@ interface MappingRule {
   map: (context: MappingContext) => PropertyControlConfig
 }
 
+const MDN_UNIT_SET = new Set<string>(Object.keys(mdnUnits as Record<string, unknown>))
+
+function pickKnownUnits(units: string[]): string[] {
+  return units.filter((unit) => unit === '%' || MDN_UNIT_SET.has(unit))
+}
+
 const UNIT_CONFIGS: Record<UnitValueType, { units: string[]; defaultUnit: string; step: number }> = {
   'length': {
-    units: ['px', 'rem', 'em', 'vw', 'vh'],
+    units: pickKnownUnits(['px', 'rem', 'em', 'vw', 'vh', 'vmin', 'vmax', 'vi', 'vb', 'svw', 'svh', 'lvw', 'lvh', 'dvw', 'dvh', 'ch', 'ex', 'cm', 'mm', 'in', 'pt', 'pc', 'q', 'lh', 'rlh', 'cap', 'ic']),
     defaultUnit: 'px',
     step: 1
   },
   'length-percentage': {
-    units: ['px', '%', 'rem', 'em', 'vw', 'vh'],
+    units: pickKnownUnits(['px', '%', 'rem', 'em', 'vw', 'vh', 'vmin', 'vmax', 'vi', 'vb', 'svw', 'svh', 'lvw', 'lvh', 'dvw', 'dvh', 'ch', 'ex', 'cm', 'mm', 'in', 'pt', 'pc', 'q', 'lh', 'rlh', 'cap', 'ic']),
     defaultUnit: 'px',
     step: 1
   },
@@ -51,12 +62,12 @@ const UNIT_CONFIGS: Record<UnitValueType, { units: string[]; defaultUnit: string
     step: 1
   },
   'time': {
-    units: ['ms', 's'],
+    units: pickKnownUnits(['ms', 's']),
     defaultUnit: 'ms',
     step: 10
   },
   'angle': {
-    units: ['deg', 'rad', 'turn', 'grad'],
+    units: pickKnownUnits(['deg', 'rad', 'turn', 'grad']),
     defaultUnit: 'deg',
     step: 1
   }
@@ -103,9 +114,14 @@ const SLIDER_PROPERTIES = new Set([
 
 const rules: MappingRule[] = [
   {
-    name: 'keyword-options-select',
-    when: (context) => Boolean(context.options && context.options.length > 0),
+    name: 'finite-keyword-select',
+    when: (context) => Boolean(context.options && context.options.length >= 2 && context.options.length <= 20),
     map: (context) => ({ controlType: 'select', options: context.options })
+  },
+  {
+    name: 'keyword-only-select-from-hints',
+    when: (context) => context.keywordOnly && context.keywordOptions.length >= 2 && context.keywordOptions.length <= 20,
+    map: (context) => ({ controlType: 'select', options: context.keywordOptions })
   },
   {
     name: 'alpha-slider',
@@ -209,11 +225,19 @@ const rules: MappingRule[] = [
   }
 ]
 
-export function inferControlConfig({ property, syntax, options }: InferControlConfigParams): PropertyControlConfig {
+export function inferControlConfig({
+  property,
+  syntax,
+  options,
+  keywordOptions,
+  keywordOnly
+}: InferControlConfigParams): PropertyControlConfig {
   const context: MappingContext = {
     property,
     syntax,
     options,
+    keywordOptions: keywordOptions ?? [],
+    keywordOnly: keywordOnly ?? false,
     families: inferSyntaxFamilies(syntax),
     range: extractNumericRange(syntax)
   }

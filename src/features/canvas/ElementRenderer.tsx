@@ -180,7 +180,7 @@ export function ElementRenderer({
               setEditingTextId(null)
             }
           }}
-          className={`${isEditingText ? 'pointer-events-auto select-text rounded-sm bg-white/70 px-0.5 outline-none ring-2 ring-blue-400/70 ring-offset-1' : 'pointer-events-none select-none'} whitespace-pre-wrap text-inherit ${textMode === 'fixed' ? 'h-full w-full overflow-hidden' : 'inline-block'}`}
+          className={`${isEditingText ? 'pointer-events-auto select-text rounded-sm px-0.5 outline-none' : 'pointer-events-none select-none'} whitespace-pre-wrap text-inherit ${textMode === 'fixed' ? 'h-full w-full overflow-hidden' : 'inline-block'}`}
         >
           {String(element.styles.text ?? 'Text')}
         </div>

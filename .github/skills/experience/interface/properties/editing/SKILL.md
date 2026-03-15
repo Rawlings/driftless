@@ -21,6 +21,19 @@ metadata:
 - Keep update logic centralized through the feature state boundary.
 - Support default values when properties are unset.
 - Prefer declarative control mapping rules over hardcoded per-property conditionals.
+- Display property labels as raw CSS property names in kebab-case.
+- Do not humanize labels or strip dashes from CSS property names.
+- Prefer PrimeReact form controls for applicable property-editing UI primitives.
+
+## PrimeReact Control Mapping
+
+- Use `InputText` for freeform text fields and search.
+- Use `InputNumber` for numeric inputs.
+- Use `Slider` for bounded range values such as opacity.
+- Use `Dropdown` for enumerated/select values and unit pickers.
+- Use `ColorPicker` when color editing is appropriate.
+- Use `Accordion` for grouped property sections when a collapsible panel pattern is needed.
+- Keep PrimeReact components visually integrated with the editor shell through the shared central UI theme layer, using `className`, `inputClassName`, and pass-through styling instead of stylesheet selectors.
 
 ## Opportunities
 
@@ -34,3 +47,5 @@ metadata:
 - Edited values appear on canvas immediately.
 - Numeric, color, select, and text inputs round-trip reliably.
 - Invalid input is handled safely without breaking rendering.
+- Property labels match real CSS names exactly, including dashes.
+- PrimeReact components are used for supported property input controls.

@@ -1,42 +1,101 @@
-# RUI
+# Interface Delivery Platform
 
-RUI is the kind of design editor you open once and immediately feel momentum.
+Design, align, and deliver product interfaces in one shared workspace.
 
-It is fast when you are exploring, precise when you are refining, and flexible when you are pushing beyond the obvious. You can move from rough layout to highly polished interface styling without context switching into a dozen disconnected tools.
+This platform is built for teams that want a direct path from concept to production-ready UI, without the usual handoff drag between design and engineering.
 
-## Live Site
+## Live Product
 
 https://rawlings.github.io/rui/
 
-## Why RUI Feels Powerful
+## The Core Idea
 
-RUI is built for high-velocity design work. You are not stuck in a shallow layer of controls. You can start simple and keep going deeper without hitting hard limits.
+Most teams do excellent work, then lose time translating that work across tools.
 
-- Immediate canvas feedback while editing
-- Fast common controls for day-to-day design flow
-- Advanced styling range when you need exact visual control
-- Interaction model tuned for real design speed
-- Product architecture designed to scale with ambitious features
+Design intent gets diluted.
+Implementation details get re-decided.
+Review cycles stretch.
 
-## The Experience
+This product removes that translation tax by giving teams a single environment where structure, styling, and implementation intent stay connected from day one.
 
-RUI is intentionally direct. Tools are where you expect them. Selection behavior is clear. Editing is responsive. Layered styling and nuanced visual treatment remain within reach instead of hidden behind fragile workarounds.
+## Why Teams Choose This Approach
 
-The goal is to keep creative momentum high. You should be able to move quickly, make bold decisions, and still retain precision all the way to production-level polish.
+- One source of truth for interface decisions
+- 1:1 designer-developer workflow instead of interpretive handoff
+- Faster iteration without sacrificing production detail
+- Higher confidence in what gets shipped
 
-## What You Can Do In Practice
+## What It Enables
 
-- Compose interfaces visually on a live canvas
-- Shape and refine layouts with precise direct-manipulation workflows
-- Work with broad styling capabilities from basic to advanced
-- Build richer visual systems without losing structural clarity
-- Iterate quickly while preserving reliable editor behavior
+### Build with Speed
 
-## Product Direction
+- Compose interfaces directly on a live canvas
+- Move quickly from rough layout to polished presentation
+- Iterate in tight loops with immediate visual feedback
 
-RUI is aimed at teams and makers who care about both speed and quality. It is not trying to be a toy. It is being shaped as a serious design environment where advanced styling, responsive decisions, and fine-grained control can coexist with a workflow that still feels light and fast.
+### Refine with Precision
 
-As the editor evolves, the focus remains the same: remove friction, increase creative range, and keep the path from idea to polished interface as short and as smooth as possible.
+- Control hierarchy, spacing, and visual rhythm with intent
+- Tune advanced styling in context, not in disconnected panels
+- Maintain design quality while increasing delivery velocity
+
+### Align Across Functions
+
+- Keep product, design, and engineering conversations grounded in the same artifact
+- Reduce ambiguity before implementation starts
+- Shorten review loops by making intent explicit
+
+## Value for Each Team
+
+### Design
+
+- More creative range without workflow fragmentation
+- Better control over final output quality
+- Less time preparing “handoff packages” and explaining edge cases
+
+### Engineering
+
+- Clearer interface intent and fewer guesswork decisions
+- Faster implementation from structured, production-minded specs
+- Reduced back-and-forth on styling and interaction details
+
+### Product and Leadership
+
+- Better predictability from idea to release
+- Lower rework caused by interpretation gaps
+- Stronger consistency across surfaces and teams
+
+## Product Communication Principles
+
+This platform is communicated and built around a few non-negotiables:
+
+- Outcome-first messaging: focus on shipped value, not tooling mechanics
+- End-to-end workflow clarity: from first concept to final interface
+- Team language over role silos: everyone works from the same reality
+- Systems at scale: repeatable quality, not one-off screens
+- Simplicity with depth: approachable at first touch, powerful when needed
+
+## Typical Use Cases
+
+- Shipping new product surfaces faster with fewer revisions
+- Aligning cross-functional teams during rapid feature cycles
+- Building design systems and reusable UI patterns with implementation fidelity
+- Reducing design-to-code drift in high-velocity product organizations
+
+## Business Outcomes
+
+Teams using this model consistently improve:
+
+- Time-to-first-usable-interface
+- Design-to-development cycle time
+- Consistency across shipped UI
+- Confidence during launch and post-launch iteration
+
+## Strategic Position
+
+This is not a lightweight mockup utility.
+
+It is a delivery platform for interface work: fast enough for exploration, structured enough for implementation, and clear enough for cross-functional execution.
 
 ## Contributing
 

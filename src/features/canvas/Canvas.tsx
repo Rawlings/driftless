@@ -303,7 +303,7 @@ export function Canvas() {
   return (
     <div
       data-editor-stage="true"
-      className={`absolute inset-0 bg-gray-100 ${canvasCursorClass}`}
+      className={`absolute inset-0 ${canvasCursorClass}`}
       onAuxClick={(e) => {
         if (e.button === 1) {
           e.preventDefault()

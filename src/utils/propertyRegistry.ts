@@ -1,11 +1,19 @@
 import mdnProperties from 'mdn-data/css/properties.json'
+import mdnDefinitions from 'mdn-data/css/definitions.json'
 import { inferControlConfig, type PropertyControlType, type UnitValueType } from './propertyControlMapper'
+import { getPropertyValueHints } from './propertyValueHints'
 
 export interface PropertyDefinition {
   group: string
   name: string
   type: PropertyControlType
+  inherited: boolean
+  status: 'standard' | 'experimental' | 'nonstandard' | 'obsolete'
+  mdnUrl?: string
+  syntax?: string
+  typeHints?: Array<{ name: string; mdnUrl?: string; status?: string }>
   options?: string[]
+  suggestions?: Array<{ value: string; kind: 'keyword' | 'function'; description?: string; mdnUrl?: string }>
   min?: number
   max?: number
   step?: number
@@ -14,47 +22,17 @@ export interface PropertyDefinition {
   defaultUnit?: string
   default: any
   cssProperty: string
-  tier: 'common' | 'advanced'
 }
+
+const GROUP_ENUM = new Set<string>(((mdnDefinitions as Record<string, { enum?: string[] }>).groupList?.enum ?? []))
 
 type MdnPropertyRecord = {
   initial?: string | string[]
   syntax?: string | string[]
-}
-
-const COMMON_PROPERTY_KEYS = [
-  'position',
-  'display',
-  'width',
-  'height',
-  'left',
-  'top',
-  'z-index',
-  'color',
-  'font-size',
-  'font-weight',
-  'text-align',
-  'padding',
-  'margin',
-  'gap',
-  'background-color',
-  'background-image',
-  'border-width',
-  'border-style',
-  'border-color',
-  'border-radius',
-  'opacity',
-  'box-shadow',
-  'transition',
-  'transform'
-] as const
-
-const SELECT_OPTIONS: Record<string, string[]> = {
-  position: ['absolute', 'relative', 'fixed', 'sticky', 'static'],
-  display: ['block', 'inline-block', 'inline', 'flex', 'grid', 'none'],
-  'font-weight': ['300', '400', '500', '600', '700', '800'],
-  'text-align': ['left', 'center', 'right', 'justify'],
-  'border-style': ['solid', 'dashed', 'dotted', 'none']
+  groups?: string[]
+  inherited?: boolean
+  status?: 'standard' | 'experimental' | 'nonstandard' | 'obsolete'
+  mdn_url?: string
 }
 
 function kebabToCamel(property: string) {
@@ -62,14 +40,28 @@ function kebabToCamel(property: string) {
   return [head, ...rest.map((segment) => `${segment[0]?.toUpperCase() ?? ''}${segment.slice(1)}`)].join('')
 }
 
-function kebabToLabel(property: string) {
-  return property
-    .split('-')
-    .map((segment) => `${segment[0]?.toUpperCase() ?? ''}${segment.slice(1)}`)
-    .join(' ')
+function normalizeMdnGroup(group: string): string {
+  const trimmed = group.trim()
+  if (GROUP_ENUM.has(trimmed)) {
+    return trimmed.replace(/^CSS\s+/i, '').trim()
+  }
+
+  const prefixed = trimmed.startsWith('CSS ') ? trimmed : `CSS ${trimmed}`
+  if (GROUP_ENUM.has(prefixed)) {
+    return prefixed.replace(/^CSS\s+/i, '').trim()
+  }
+
+  return trimmed.replace(/^CSS\s+/i, '').trim()
 }
 
-function inferGroup(property: string): string {
+function inferGroup(property: string, mdnGroups?: string[]): string {
+  if (mdnGroups && mdnGroups.length > 0) {
+    const first = normalizeMdnGroup(mdnGroups[0])
+    if (first.length > 0) {
+      return first
+    }
+  }
+
   if (/^grid-/.test(property)) return 'Grid'
   if (/^flex|^align-|^justify-/.test(property)) return 'Flexbox'
   if (/^(font-|line-|letter-|text-|color$)/.test(property)) return 'Typography'
@@ -92,9 +84,13 @@ function normalizeMetadataValue(value: string | string[] | undefined): string {
   return ''
 }
 
-function inferDefault(property: string, initial: string, type: PropertyDefinition['type']): PropertyDefinition['default'] {
-  if (SELECT_OPTIONS[property]) {
-    return SELECT_OPTIONS[property][0]
+function inferDefault(
+  initial: string,
+  type: PropertyDefinition['type'],
+  options?: string[]
+): PropertyDefinition['default'] {
+  if (type === 'select' && options && options.length > 0) {
+    return options[0]
   }
 
   if (type === 'number' || type === 'slider') {
@@ -117,50 +113,56 @@ function inferDefault(property: string, initial: string, type: PropertyDefinitio
   return initial || 'initial'
 }
 
-function buildPropertyDefinition(property: string, tier: PropertyDefinition['tier']): PropertyDefinition {
+function buildPropertyDefinition(property: string): PropertyDefinition {
   const metadata = (mdnProperties as unknown as Record<string, MdnPropertyRecord>)[property] ?? {}
   const syntax = normalizeMetadataValue(metadata.syntax)
   const initial = normalizeMetadataValue(metadata.initial)
+  const valueHints = getPropertyValueHints(syntax)
   const control = inferControlConfig({
     property,
     syntax,
-    options: SELECT_OPTIONS[property]
+    options: valueHints.keywordOnly ? valueHints.keywords : undefined,
+    keywordOptions: valueHints.keywords,
+    keywordOnly: valueHints.keywordOnly
   })
   const type = control.controlType
 
   return {
-    group: inferGroup(property),
-    name: kebabToLabel(property),
+    group: inferGroup(property, metadata.groups),
+    name: property,
     type,
+    inherited: Boolean(metadata.inherited),
+    status: metadata.status ?? 'standard',
+    mdnUrl: metadata.mdn_url,
+    syntax,
+    typeHints: valueHints.typeHints,
     options: control.options,
+    suggestions: [
+      ...valueHints.keywords.map((value) => ({ value, kind: 'keyword' as const })),
+      ...valueHints.functionSuggestions.map((fn) => ({
+        value: fn.value,
+        kind: 'function' as const,
+        description: fn.description,
+        mdnUrl: fn.mdnUrl
+      }))
+    ],
     min: control.min,
     max: control.max,
     step: control.step,
     unitType: control.unitType,
     units: control.units,
     defaultUnit: control.defaultUnit,
-    default: inferDefault(property, initial, type),
-    cssProperty: kebabToCamel(property),
-    tier
+    default: inferDefault(initial, type, control.options),
+    cssProperty: kebabToCamel(property)
   }
 }
 
-const COMMON_PROPERTIES: PropertyDefinition[] = COMMON_PROPERTY_KEYS.map((property) => buildPropertyDefinition(property, 'common'))
-
-const ADVANCED_PROPERTIES: PropertyDefinition[] = Object.keys(mdnProperties)
+export const propertyRegistry: PropertyDefinition[] = Object.keys(mdnProperties)
   .filter((property) => !property.startsWith('-'))
-  .filter((property) => !COMMON_PROPERTY_KEYS.includes(property as (typeof COMMON_PROPERTY_KEYS)[number]))
-  .map((property) => buildPropertyDefinition(property, 'advanced'))
+  .map((property) => buildPropertyDefinition(property))
   .sort((a, b) => a.name.localeCompare(b.name))
 
-export const propertyRegistry: PropertyDefinition[] = [...COMMON_PROPERTIES, ...ADVANCED_PROPERTIES]
-
-export const getPropertyRegistry = (mode: 'common' | 'all' = 'common') => {
-  if (mode === 'all') {
-    return propertyRegistry
-  }
-  return propertyRegistry.filter((property) => property.tier === 'common')
-}
+export const getPropertyRegistry = () => propertyRegistry
 
 export const groupProperties = (registry: PropertyDefinition[]) => {
   const groups: { [key: string]: PropertyDefinition[] } = {}
