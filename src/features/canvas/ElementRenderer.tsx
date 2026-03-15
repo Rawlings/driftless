@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { Rnd } from 'react-rnd'
+import type { ResizeDirection } from 're-resizable'
 import type { Element } from '../../core/types'
 import { useCanvasCommandDomain, useCanvasQueryDomain } from '../state'
-import { computeSnap, type SnapRect } from './snapEngine'
+import { computeSnapFromLookup, createSnapGuideLookup, type SnapRect } from './snapEngine'
 import {
   canDragElement,
   canResizeElement,
@@ -63,13 +64,48 @@ export function ElementRenderer({
   const canDrag = canDragElement(activeTool, isEditingText)
   const canResize = canResizeElement(activeTool, isEditingText)
   const isLocked = Boolean(element.locked)
+  const canSnapInteract = isSelected && !isLocked && (canDrag || canResize)
+  const supportsAllSideResize = element.type === 'square' || element.type === 'circle'
+  const showResizeAffordances = isSelected && canShowElementSelectionChrome(activeTool) && !isEditingText && !isLocked
+  const resizeHandles = supportsAllSideResize
+    ? {
+        top: true,
+        right: true,
+        bottom: true,
+        left: true,
+        topRight: true,
+        topLeft: true,
+        bottomRight: true,
+        bottomLeft: true,
+      }
+    : {
+        bottomRight: true
+      }
+  const resizeHandleStyles = supportsAllSideResize
+    ? {
+        top: { cursor: 'ns-resize' },
+        right: { cursor: 'ew-resize' },
+        bottom: { cursor: 'ns-resize' },
+        left: { cursor: 'ew-resize' },
+        topRight: { cursor: 'nesw-resize' },
+        topLeft: { cursor: 'nwse-resize' },
+        bottomRight: { cursor: 'nwse-resize' },
+        bottomLeft: { cursor: 'nesw-resize' },
+      }
+    : {
+        bottomRight: { cursor: 'nwse-resize' }
+      }
   const guideRafRef = useRef<number | null>(null)
   const pendingDragRectRef = useRef<DragSnapInput | null>(null)
   const lastGuidesKeyRef = useRef('')
 
-  const snapCandidates = useMemo<SnapRect[]>(() =>
-    elements
-      .filter((el) => el.id !== element.id && !el.hidden && !el.locked)
+  const snapCandidates = useMemo<SnapRect[]>(() => {
+    if (!canSnapInteract) {
+      return []
+    }
+
+    return elements
+      .filter((el) => el.id !== element.id && !el.hidden && !el.locked && (el.parentId ?? null) === (element.parentId ?? null))
       .map((el) => ({
         id: el.id,
         left: Number(el.styles.left ?? 0),
@@ -77,18 +113,27 @@ export function ElementRenderer({
         width: Number(el.styles.width ?? 0),
         height: Number(el.styles.height ?? 0),
         parentId: el.parentId ?? null
-      })), [elements, element.id])
+      }))
+  }, [canSnapInteract, elements, element.id, element.parentId])
+
+  const snapLookup = useMemo(() => {
+    if (!canSnapInteract) {
+      return null
+    }
+
+    return createSnapGuideLookup(snapCandidates)
+  }, [canSnapInteract, snapCandidates])
 
   const guidesKey = (guides: Array<{ type: 'v' | 'h'; position: number }>) =>
     guides.map((guide) => `${guide.type}:${Math.round(guide.position)}`).join('|')
 
   const flushDragGuides = () => {
     const rect = pendingDragRectRef.current
-    if (!rect) {
+    if (!rect || !snapLookup) {
       return
     }
 
-    const result = computeSnap(rect, snapCandidates)
+    const result = computeSnapFromLookup(rect, snapLookup)
     const key = guidesKey(result.guides)
 
     if (key !== lastGuidesKeyRef.current) {
@@ -98,6 +143,10 @@ export function ElementRenderer({
   }
 
   const scheduleDragGuides = (rect: DragSnapInput) => {
+    if (!snapLookup) {
+      return
+    }
+
     pendingDragRectRef.current = rect
     if (guideRafRef.current != null) {
       return
@@ -167,10 +216,9 @@ export function ElementRenderer({
       position={{ x: left, y: top }}
       disableDragging={!canDrag || isLocked}
       enableResizing={isSelected && canResize && !isLocked
-        ? {
-            bottomRight: true
-          }
+        ? resizeHandles
         : false}
+      resizeHandleStyles={resizeHandleStyles}
       onMouseDown={(e) => {
         e.stopPropagation()
 
@@ -183,6 +231,7 @@ export function ElementRenderer({
       }}
       onDrag={(_, data) => {
         if (isLocked) return
+        if (!snapLookup) return
         scheduleDragGuides({
           x: data.x,
           y: data.y,
@@ -205,10 +254,12 @@ export function ElementRenderer({
           guideRafRef.current = null
         }
 
-        const result = computeSnap(
-          { x: data.x, y: data.y, width: Number(width), height: Number(height), id: element.id, parentId: element.parentId ?? null },
-          snapCandidates
-        )
+        const result = snapLookup
+          ? computeSnapFromLookup(
+            { x: data.x, y: data.y, width: Number(width), height: Number(height) },
+            snapLookup
+          )
+          : { x: data.x, y: data.y, guides: [] }
         clearSnapGuides()
         pendingDragRectRef.current = null
         lastGuidesKeyRef.current = ''
@@ -217,19 +268,21 @@ export function ElementRenderer({
         })
         onInteractionSignal?.({ type: 'DRAG_END' })
       }}
-      onResizeStart={() => {
+      onResizeStart={(_, direction: ResizeDirection) => {
         if (!isLocked) {
-          onInteractionSignal?.({ type: 'RESIZE_START', elementId: element.id, handle: 'bottomRight' })
+          onInteractionSignal?.({ type: 'RESIZE_START', elementId: element.id, handle: direction })
         }
       }}
       onResizeStop={(_, __, ref, ___, position) => {
         if (isLocked) return
         const w = ref.offsetWidth
         const h = ref.offsetHeight
-        const result = computeSnap(
-          { x: position.x, y: position.y, width: w, height: h, id: element.id, parentId: element.parentId ?? null },
-          snapCandidates
-        )
+        const result = snapLookup
+          ? computeSnapFromLookup(
+            { x: position.x, y: position.y, width: w, height: h },
+            snapLookup
+          )
+          : { x: position.x, y: position.y, guides: [] }
         clearSnapGuides()
         updateElement(element.id, {
           styles: { ...element.styles, left: result.x, top: result.y, width: w, height: h }
@@ -290,13 +343,27 @@ export function ElementRenderer({
         />
       )}
 
-      {isSelected && canShowElementSelectionChrome(activeTool) && !isEditingText && !isLocked && (
+      {showResizeAffordances && supportsAllSideResize && (
+        <>
+          <div className="pointer-events-none absolute -top-1.5 left-1/2 h-3 w-7 -translate-x-1/2 rounded-full border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.22)]" />
+          <div className="pointer-events-none absolute -bottom-1.5 left-1/2 h-3 w-7 -translate-x-1/2 rounded-full border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.22)]" />
+          <div className="pointer-events-none absolute -left-1.5 top-1/2 h-7 w-3 -translate-y-1/2 rounded-full border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.22)]" />
+          <div className="pointer-events-none absolute -right-1.5 top-1/2 h-7 w-3 -translate-y-1/2 rounded-full border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.22)]" />
+
+          <div className="pointer-events-none absolute -left-2 -top-2 h-4 w-4 rounded-[0.45rem] border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.24)]" />
+          <div className="pointer-events-none absolute -right-2 -top-2 h-4 w-4 rounded-[0.45rem] border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.24)]" />
+          <div className="pointer-events-none absolute -left-2 -bottom-2 h-4 w-4 rounded-[0.45rem] border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.24)]" />
+          <div className="pointer-events-none absolute -right-2 -bottom-2 h-4 w-4 rounded-[0.45rem] border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.24)]" />
+        </>
+      )}
+
+      {showResizeAffordances && !supportsAllSideResize && (
         <div
-          className="absolute -bottom-2 -right-2 flex h-5 w-5 cursor-se-resize items-center justify-center rounded-full outline-2 outline-[var(--primary-color)] outline-offset-[-1px] bg-[var(--surface-0)] shadow-md"
+          className="absolute -bottom-2 -right-2 flex h-4 w-4 cursor-se-resize items-center justify-center rounded-[0.45rem] border-2 border-[var(--primary-color)] bg-[var(--surface-0)] shadow-[0_2px_10px_rgba(0,0,0,0.24)]"
           title="Resize"
           aria-label="Resize element"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary-color)]" />
+          <span className="h-1.5 w-1.5 rounded-[2px] bg-[var(--primary-color)]" />
         </div>
       )}
 

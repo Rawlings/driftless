@@ -7,23 +7,25 @@ import type { CanvasInteractionEvent } from './interactionMachine'
 
 interface CanvasSceneProps {
   elements: Element[]
-  selectedId: string | null
+  selectedIds: string[]
   viewportOffset: { x: number; y: number }
   viewportScale: number
   snapGuides: SnapGuide[]
   shapePreviewClassName: string
   shapePreviewStyle: CSSProperties | null
+  marqueeStyle?: CSSProperties | null
   onElementInteractionSignal?: (event: CanvasInteractionEvent) => boolean
 }
 
 export function CanvasScene({
   elements,
-  selectedId,
+  selectedIds,
   viewportOffset,
   viewportScale,
   snapGuides,
   shapePreviewClassName,
   shapePreviewStyle,
+  marqueeStyle,
   onElementInteractionSignal,
 }: CanvasSceneProps) {
   const childrenByParent = useMemo(() => {
@@ -44,7 +46,7 @@ export function CanvasScene({
     <ElementRenderer
       key={element.id}
       element={element}
-      isSelected={selectedId === element.id}
+      isSelected={selectedIds.includes(element.id)}
       onInteractionSignal={onElementInteractionSignal}
     >
       {(childrenByParent.get(element.id) ?? []).map((child) => renderElementTree(child))}
@@ -60,6 +62,13 @@ export function CanvasScene({
 
       {shapePreviewStyle ? (
         <div className={shapePreviewClassName} style={shapePreviewStyle} />
+      ) : null}
+
+      {marqueeStyle ? (
+        <div
+          className="pointer-events-none absolute border border-[var(--primary-color)] bg-[var(--primary-color)]/15"
+          style={marqueeStyle}
+        />
       ) : null}
 
       {snapGuides.map((guide, i) =>

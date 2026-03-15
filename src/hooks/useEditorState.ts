@@ -3,7 +3,8 @@ import type { Element } from '../core/types'
 
 export function useEditorState() {
   const [elements, setElements] = useState<Element[]>([])
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const selectedId = selectedIds[0] ?? null
 
   const addElement = useCallback((
     type: Element['type'],
@@ -60,7 +61,7 @@ export function useEditorState() {
       }
     }
     setElements(prev => [...prev, newElement])
-    setSelectedId(id)
+    setSelectedIds([id])
     return id
   }, [])
 
@@ -134,7 +135,7 @@ export function useEditorState() {
     }
 
     setElements((prev) => {
-      const idSet = new Set<string>([selectedId])
+      const idSet = new Set<string>(selectedIds)
 
       let changed = true
       while (changed) {
@@ -149,8 +150,8 @@ export function useEditorState() {
 
       return prev.filter((element) => !idSet.has(element.id))
     })
-    setSelectedId(null)
-  }, [selectedId])
+    setSelectedIds([])
+  }, [selectedIds])
 
   const duplicateSelectedElement = useCallback(() => {
     if (!selectedId) {
@@ -206,7 +207,7 @@ export function useEditorState() {
       })
 
       const next = [...prev, ...duplicates]
-      setSelectedId(idMap.get(selectedId) ?? selectedId)
+      setSelectedIds([idMap.get(selectedId) ?? selectedId])
       return next
     })
   }, [selectedId])
@@ -245,11 +246,21 @@ export function useEditorState() {
 
   const selectedElement = selectedId ? elements.find(el => el.id === selectedId) || null : null
 
+  const setSelectedId = useCallback((id: string | null) => {
+    setSelectedIds(id ? [id] : [])
+  }, [])
+
+  const setSelectedIdsSafe = useCallback((ids: string[]) => {
+    setSelectedIds(ids)
+  }, [])
+
   return {
     elements,
+    selectedIds,
     selectedId,
     selectedElement,
     setSelectedId,
+    setSelectedIds: setSelectedIdsSafe,
     addElement,
     updateElement,
     moveElementLayer,

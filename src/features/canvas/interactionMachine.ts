@@ -6,13 +6,15 @@ interface CanvasPoint {
   y: number
 }
 
+type ResizeHandle = 'top' | 'right' | 'bottom' | 'left' | 'topRight' | 'topLeft' | 'bottomRight' | 'bottomLeft'
+
 export type CanvasInteractionTransient =
   | { type: 'none' }
   | { type: 'pan'; source: 'tool' | 'middle-mouse' }
   | { type: 'shape-create'; shapeTool: 'square' | 'circle' | 'line'; origin: CanvasPoint }
   | { type: 'text-create'; origin: CanvasPoint }
   | { type: 'drag'; elementId: string }
-  | { type: 'resize'; elementId: string; handle: 'bottomRight' }
+  | { type: 'resize'; elementId: string; handle: ResizeHandle }
   | { type: 'text-edit'; elementId: string }
 
 export interface CanvasInteractionContext {
@@ -28,7 +30,7 @@ export type CanvasInteractionEvent =
   | { type: 'TEXT_CREATION_END' }
   | { type: 'DRAG_START'; elementId: string }
   | { type: 'DRAG_END' }
-  | { type: 'RESIZE_START'; elementId: string; handle: 'bottomRight' }
+  | { type: 'RESIZE_START'; elementId: string; handle: ResizeHandle }
   | { type: 'RESIZE_END' }
   | { type: 'TEXT_EDIT_START'; elementId: string }
   | { type: 'TEXT_EDIT_END' }
@@ -164,7 +166,7 @@ export function resolveCanvasCursorClass(
 }
 
 function shouldClearCanvasSelection(activeTool: EditorToolId): boolean {
-  return activeTool === 'move' || activeTool === 'scale'
+  return activeTool === 'move'
 }
 
 export function canPanFromPointer(activeTool: EditorToolId, mouseButtons: number): boolean {
@@ -174,18 +176,16 @@ export function canPanFromPointer(activeTool: EditorToolId, mouseButtons: number
 
 export function resolveCanvasIdleCursorClass(activeTool: EditorToolId): string {
   if (activeTool === 'hand') return 'cursor-grab'
-  if (activeTool === 'scale') return 'cursor-se-resize'
   return 'cursor-default'
 }
 
 export function resolveElementCursorClass(activeTool: EditorToolId): string {
   if (activeTool === 'move') return 'cursor-move'
-  if (activeTool === 'scale') return 'cursor-se-resize'
   return 'cursor-default'
 }
 
 export function canSelectElementFromPointer(activeTool: EditorToolId, isTextElement: boolean): boolean {
-  return activeTool === 'move' || activeTool === 'scale' || (activeTool === 'text' && isTextElement)
+  return activeTool === 'move' || (activeTool === 'text' && isTextElement)
 }
 
 export function canDragElement(activeTool: EditorToolId, isEditingText: boolean): boolean {
@@ -193,11 +193,11 @@ export function canDragElement(activeTool: EditorToolId, isEditingText: boolean)
 }
 
 export function canResizeElement(activeTool: EditorToolId, isEditingText: boolean): boolean {
-  return (activeTool === 'move' || activeTool === 'scale') && !isEditingText
+  return activeTool === 'move' && !isEditingText
 }
 
 export function canShowElementSelectionChrome(activeTool: EditorToolId): boolean {
-  return activeTool === 'move' || activeTool === 'scale'
+  return activeTool === 'move'
 }
 
 type CanvasBackgroundResolution =

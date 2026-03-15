@@ -12,4 +12,5 @@ export {
   useSelectionCommandDomain,
   useSelectionQueryDomain,
   useToolDomain,
+  useViewportDomain,
 } from './domainHooks'

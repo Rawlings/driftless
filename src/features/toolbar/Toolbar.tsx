@@ -12,18 +12,17 @@ import {
   MousePointer2,
   MoveUp,
   MoveDown,
-  Scale,
   Square,
   Trash2,
-  Type
+  Type,
 } from 'lucide-react'
-import { useSelectionCommandDomain, useSelectionQueryDomain, useToolDomain } from '../state'
+import { useSelectionCommandDomain, useSelectionQueryDomain, useToolDomain, useViewportDomain } from '../state'
 import { IconActionButton } from '../ui'
+import { ZoomMenuButton } from './ZoomMenuButton'
 
 const TOOL_ICONS = {
   move: <MousePointer2 size={20} strokeWidth={1.75} aria-hidden="true" />,
   hand: <Hand size={20} strokeWidth={1.75} aria-hidden="true" />,
-  scale: <Scale size={20} strokeWidth={1.75} aria-hidden="true" />,
   square: <Square size={20} strokeWidth={1.75} aria-hidden="true" />,
   circle: <Circle size={20} strokeWidth={1.75} aria-hidden="true" />,
   line: <Minus size={20} strokeWidth={1.75} aria-hidden="true" />,
@@ -32,6 +31,7 @@ const TOOL_ICONS = {
 
 export function Toolbar() {
   const { activeTool, setActiveTool } = useToolDomain()
+  const { viewportScale, setViewportScale } = useViewportDomain()
   const {
     hasSelection,
     isLocked,
@@ -50,7 +50,6 @@ export function Toolbar() {
       <div className="flex items-center gap-2.5">
         <IconActionButton ariaLabel="Move Tool" tooltip="Select and move" icon={TOOL_ICONS.move} selected={activeTool === 'move'} onClick={() => setActiveTool('move')} />
         <IconActionButton ariaLabel="Hand Tool" tooltip="Pan canvas" icon={TOOL_ICONS.hand} selected={activeTool === 'hand'} onClick={() => setActiveTool('hand')} />
-        <IconActionButton ariaLabel="Scale Tool" tooltip="Scale / resize mode" icon={TOOL_ICONS.scale} selected={activeTool === 'scale'} onClick={() => setActiveTool('scale')} />
         <IconActionButton ariaLabel="Square Tool" tooltip="Insert rectangle" icon={TOOL_ICONS.square} selected={activeTool === 'square'} onClick={() => setActiveTool('square')} />
         <IconActionButton ariaLabel="Circle Tool" tooltip="Insert ellipse" icon={TOOL_ICONS.circle} selected={activeTool === 'circle'} onClick={() => setActiveTool('circle')} />
         <IconActionButton ariaLabel="Line Tool" tooltip="Insert line" icon={TOOL_ICONS.line} selected={activeTool === 'line'} onClick={() => setActiveTool('line')} />
@@ -62,10 +61,14 @@ export function Toolbar() {
         <IconActionButton ariaLabel={isHidden ? 'Show Element' : 'Hide Element'} icon={isHidden ? <EyeOff size={20} strokeWidth={1.75} aria-hidden="true" /> : <Eye size={20} strokeWidth={1.75} aria-hidden="true" />} selected={isHidden} disabled={!hasSelection} onClick={() => toggleSelectedVisibility()} />
         <IconActionButton ariaLabel="Duplicate" icon={<Copy size={20} strokeWidth={1.75} aria-hidden="true" />} disabled={!hasSelection} onClick={() => duplicateSelectedElement()} />
         <IconActionButton ariaLabel="Delete" icon={<Trash2 size={20} strokeWidth={1.75} aria-hidden="true" />} danger disabled={!hasSelection} onClick={() => deleteSelectedElement()} />
+        <span className="mx-1 h-8 w-px bg-[var(--surface-border)]" aria-hidden="true" />
+        <ZoomMenuButton viewportScale={viewportScale} setViewportScale={setViewportScale} />
       </div>
     )
   }, [
     activeTool,
+    viewportScale,
+    setViewportScale,
     deleteSelectedElement,
     duplicateSelectedElement,
     hasSelection,

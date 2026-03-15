@@ -10,6 +10,7 @@ import {
   type CanvasInteractionEvent,
 } from './interactionMachine'
 import { useCanvasPanZoom } from './useCanvasPanZoom'
+import { useMarqueeSelection } from './useMarqueeSelection'
 import { useShapeCreation } from './useShapeCreation'
 import { useTextCreation } from './useTextCreation'
 
@@ -17,6 +18,7 @@ export function Canvas() {
   const [interactionState, sendInteraction] = useMachine(canvasInteractionMachine)
   const {
     elements,
+    selectedIds,
     selectedId,
     activeTool,
     viewportOffset,
@@ -29,6 +31,7 @@ export function Canvas() {
     clearCanvasSelection,
     stopTextEditing,
     startTextEditing,
+    selectElements,
     setActiveTool,
     setViewportOffset,
     setViewportScale,
@@ -91,6 +94,15 @@ export function Canvas() {
   const sendInteractionSignal = (event: CanvasInteractionEvent): boolean => {
     return dispatchInteraction(event)
   }
+  const { marqueeStyle, startMarquee } = useMarqueeSelection({
+    elements,
+    viewportOffset,
+    viewportScale,
+    stageRef,
+    stopTextEditing,
+    selectElements,
+    clearCanvasSelection,
+  })
 
   const handleCanvasMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement
@@ -111,6 +123,11 @@ export function Canvas() {
     const x = Math.max(0, (e.clientX - bounds.left - viewportOffset.x) / viewportScale)
     const y = Math.max(0, (e.clientY - bounds.top - viewportOffset.y) / viewportScale)
     const backgroundAction = resolveCanvasBackgroundResolution(interactionState, activeTool, { x, y })
+
+    if (backgroundAction.type === 'clear-selection' && activeTool === 'move') {
+      startMarquee(x, y)
+      return
+    }
 
     if (backgroundAction.type === 'start-shape') {
       const started = dispatchInteraction(backgroundAction.interactionEvent)
@@ -167,12 +184,13 @@ export function Canvas() {
     >
       <CanvasScene
         elements={elements}
-        selectedId={selectedId}
+        selectedIds={selectedIds}
         viewportOffset={viewportOffset}
         viewportScale={viewportScale}
         snapGuides={snapGuides}
         shapePreviewClassName={shapePreviewClassName}
         shapePreviewStyle={shapePreviewStyle}
+        marqueeStyle={marqueeStyle}
         onElementInteractionSignal={sendInteractionSignal}
       />
     </div>

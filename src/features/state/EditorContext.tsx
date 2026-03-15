@@ -7,6 +7,7 @@ import { useEditorUiStore } from './editorUiStore'
 
 interface EditorDataContextValue {
   elements: Element[]
+  selectedIds: string[]
   selectedId: string | null
   selectedElement: Element | null
   activeTool: EditorToolId
@@ -32,6 +33,7 @@ interface EditorCommandsContextValue {
   toggleSelectedLock: () => void
   toggleSelectedVisibility: () => void
   selectElement: (id: string | null) => void
+  selectElements: (ids: string[]) => void
   clearSelection: () => void
   setActiveTool: (tool: EditorToolId) => void
   setViewportOffset: (offset: { x: number; y: number }) => void
@@ -57,9 +59,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const {
     elements,
+    selectedIds,
     selectedId,
     selectedElement,
     setSelectedId,
+    setSelectedIds,
     addElement,
     updateElement,
     moveElementLayer,
@@ -80,8 +84,13 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     setSelectedId(null)
   }, [setSelectedId])
 
+  const selectElements = useCallback((ids: string[]) => {
+    setSelectedIds(ids)
+  }, [setSelectedIds])
+
   const dataValue = useMemo<EditorDataContextValue>(() => ({
     elements,
+    selectedIds,
     selectedId,
     selectedElement,
     activeTool,
@@ -89,7 +98,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     viewportScale,
     editingTextId,
     snapGuides
-  }), [elements, selectedId, selectedElement, activeTool, viewportOffset, viewportScale, editingTextId, snapGuides])
+  }), [elements, selectedIds, selectedId, selectedElement, activeTool, viewportOffset, viewportScale, editingTextId, snapGuides])
 
   const commandsValue = useMemo<EditorCommandsContextValue>(() => ({
     addElement,
@@ -103,13 +112,14 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     toggleSelectedLock,
     toggleSelectedVisibility,
     selectElement,
+    selectElements,
     clearSelection,
     setActiveTool,
     setViewportOffset,
     setViewportScale,
     setEditingTextId,
     setSnapGuides
-  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, deleteSelectedElement, duplicateSelectedElement, toggleSelectedLock, toggleSelectedVisibility, selectElement, clearSelection, setActiveTool, setViewportOffset, setViewportScale, setEditingTextId, setSnapGuides])
+  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, deleteSelectedElement, duplicateSelectedElement, toggleSelectedLock, toggleSelectedVisibility, selectElement, selectElements, clearSelection, setActiveTool, setViewportOffset, setViewportScale, setEditingTextId, setSnapGuides])
 
   return (
     <EditorDataContext.Provider value={dataValue}>

@@ -12,6 +12,16 @@ export function useToolDomain() {
   )
 }
 
+export function useViewportDomain() {
+  const { viewportScale } = useEditorData()
+  const { setViewportScale } = useEditorCommands()
+
+  return useMemo(
+    () => ({ viewportScale, setViewportScale }),
+    [viewportScale, setViewportScale]
+  )
+}
+
 export function useSelectionQueryDomain() {
   const { selectedId, selectedElement } = useEditorData()
 
@@ -143,6 +153,7 @@ export function useLayersCommandDomain() {
 export function useCanvasQueryDomain() {
   const {
     elements,
+    selectedIds,
     selectedId,
     activeTool,
     viewportOffset,
@@ -154,6 +165,7 @@ export function useCanvasQueryDomain() {
   return useMemo(
     () => ({
       elements,
+      selectedIds,
       selectedId,
       activeTool,
       viewportOffset,
@@ -163,6 +175,7 @@ export function useCanvasQueryDomain() {
     }),
     [
       elements,
+      selectedIds,
       selectedId,
       activeTool,
       viewportOffset,
@@ -179,6 +192,7 @@ export function useCanvasCommandDomain() {
     updateElement,
     clearSelection,
     selectElement,
+    selectElements,
     setActiveTool,
     setViewportOffset,
     setViewportScale,
@@ -217,6 +231,7 @@ export function useCanvasCommandDomain() {
       startTextEditing,
       stopTextEditing,
       selectElement,
+      selectElements,
       setActiveTool,
       setViewportOffset,
       setViewportScale,
@@ -230,6 +245,7 @@ export function useCanvasCommandDomain() {
       startTextEditing,
       stopTextEditing,
       selectElement,
+      selectElements,
       setActiveTool,
       setViewportOffset,
       setViewportScale,

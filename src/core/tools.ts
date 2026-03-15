@@ -1,4 +1,4 @@
-export type EditorToolId = 'move' | 'hand' | 'scale' | 'square' | 'circle' | 'line' | 'text'
+export type EditorToolId = 'move' | 'hand' | 'square' | 'circle' | 'line' | 'text'
 
 export interface EditorTool {
   id: EditorToolId
@@ -9,7 +9,6 @@ export interface EditorTool {
 export const EDITOR_TOOLS: EditorTool[] = [
   { id: 'move', label: 'Move', family: 'navigation' },
   { id: 'hand', label: 'Hand', family: 'navigation' },
-  { id: 'scale', label: 'Scale', family: 'navigation' },
   { id: 'square', label: 'Rectangle', family: 'shape' },
   { id: 'circle', label: 'Ellipse', family: 'shape' },
   { id: 'line', label: 'Line', family: 'shape' },
