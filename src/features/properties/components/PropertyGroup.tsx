@@ -14,15 +14,8 @@ export function PropertyGroup({ props, element, onUpdateProperty }: Props) {
       {props.map((prop) => (
         <div key={prop.cssProperty}>
           <div className="mb-0.5 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 mt-2">
               <label className="block text-sm font-normal text-[var(--text-color)]">{prop.cssProperty}</label>
-              {prop.inherited ? <span className="text-xs">Inherited</span> : null}
-              {prop.status !== 'standard' ? (
-                <span className="text-xs capitalize">{prop.status}</span>
-              ) : null}
-              {prop.typeHints?.slice(0, 2).map((hint) => (
-                <span key={hint.name} className="text-xs">{hint.name}</span>
-              ))}
             </div>
           </div>
           <PropertyInput

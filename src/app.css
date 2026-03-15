@@ -19,3 +19,29 @@ body {
 :focus-visible {
   @apply outline-2 outline-[var(--primary-color)] outline-offset-[-3px];
 }
+
+.properties-panel-accordion.p-accordion,
+.properties-panel-accordion.p-accordion .p-accordion-tab,
+.properties-panel-accordion.p-accordion .p-accordion-header .p-accordion-header-link,
+.properties-panel-accordion.p-accordion .p-accordion-content {
+  border-radius: 0;
+}
+
+.properties-panel-accordion.p-accordion {
+  background: #ffffff;
+}
+
+.properties-panel-accordion.p-accordion .p-accordion-tab {
+  margin: 0;
+  border-bottom: 0;
+}
+
+.properties-panel-accordion.p-accordion .p-accordion-header .p-accordion-header-link,
+.properties-panel-accordion.p-accordion .p-accordion-content {
+  background: #ffffff;
+  border-bottom: 0;
+}
+
+.properties-panel-accordion.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-header-text {
+  font-weight: 400;
+}
