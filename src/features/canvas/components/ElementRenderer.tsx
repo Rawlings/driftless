@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { Rnd } from 'react-rnd'
 import type { ResizeDirection } from 're-resizable'
-import type { Element } from '../../core/types'
-import { useCanvasCommandDomain, useCanvasQueryDomain } from '../state'
-import { computeSnapFromLookup, createSnapGuideLookup, type SnapRect } from './snapEngine'
+import type { Element } from '../../../core/types'
+import { useCanvasCommandDomain, useCanvasQueryDomain } from '../../state'
+import { computeSnapFromLookup, createSnapGuideLookup, type SnapRect } from '../model/snapEngine'
 import {
   canDragElement,
   canResizeElement,
   canSelectElementFromPointer,
   canShowElementSelectionChrome,
   resolveElementCursorClass,
-} from './interactionMachine'
-import type { CanvasInteractionEvent } from './interactionMachine'
+} from '../interaction/interactionMachine'
+import type { CanvasInteractionEvent } from '../interaction/interactionMachine'
 
 interface DragSnapInput {
   x: number
@@ -53,7 +53,6 @@ export function ElementRenderer({
 
   const elementCursorClass = resolveElementCursorClass(activeTool)
   const selectionOutlineClass = element.type === 'circle' ? 'rounded-full' : 'rounded-md'
-  const textMode = String(element.styles.textMode ?? 'auto')
   const isEditingText = element.type === 'text' && editingTextId === element.id
 
   const left = Number(element.styles.left ?? 0)
@@ -331,7 +330,7 @@ export function ElementRenderer({
               onInteractionSignal?.({ type: 'TEXT_EDIT_END' })
             }
           }}
-          className={`${isEditingText ? 'pointer-events-auto select-text rounded-sm px-0.5 outline-2 outline-[var(--primary-color)] outline-offset-[-3px]' : 'pointer-events-none select-none'} whitespace-pre-wrap text-inherit ${textMode === 'fixed' ? 'h-full w-full overflow-hidden' : 'inline-block'}`}
+          className={isEditingText ? 'pointer-events-auto select-text' : 'pointer-events-none select-none'}
         >
           {String(element.styles.text ?? 'Text')}
         </div>

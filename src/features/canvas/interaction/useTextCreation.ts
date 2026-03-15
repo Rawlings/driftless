@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import type { Element } from '../../core/types'
-import type { EditorToolId } from '../../core/tools'
-import type { CreatingTextState, Point } from './canvasTypes'
+import type { Element } from '../../../core/types'
+import type { EditorToolId } from '../../../core/tools'
+import type { CreatingTextState, Point } from '../model/canvasTypes'
 
 interface UseTextCreationParams {
   addElement: (type: Element['type'], position?: { left: number; top: number }, styleOverrides?: Partial<Element['styles']>) => string

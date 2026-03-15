@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import type { EditorToolId } from '../../core/tools'
-import type { SnapGuide } from '../canvas'
+import type { EditorToolId } from '../../../core/tools'
+import type { SnapGuide } from '../../canvas'
 
 interface ViewportOffset {
   x: number

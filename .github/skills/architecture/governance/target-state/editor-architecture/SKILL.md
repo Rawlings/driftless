@@ -37,7 +37,7 @@ Operational workflow defaults and implementation checklists are maintained in `A
 
 ### 2) Product Module Layout
 
-- Runtime code belongs under product-oriented paths such as `src/features`, `src/core`, `src/hooks`, and `src/components`.
+- Runtime code belongs under product-oriented paths such as `src/features` and `src/core`, with feature internals grouped by ownership (`components`, `interaction`, `model`, `domain`, `context`, `store`).
 - Keep feature internals private by default; export stable public APIs at feature boundaries.
 - Avoid role-oriented runtime folders and workflow-oriented runtime placement.
 

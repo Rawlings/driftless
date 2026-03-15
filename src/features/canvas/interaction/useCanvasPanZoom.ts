@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type WheelEvent } from 'react'
 import { useDrag } from '@use-gesture/react'
-import type { EditorToolId } from '../../core/tools'
+import type { EditorToolId } from '../../../core/tools'
 import { canPanFromPointer, resolveCanvasIdleCursorClass } from './interactionMachine'
-import type { Point } from './canvasTypes'
+import type { Point } from '../model/canvasTypes'
 
 interface UseCanvasPanZoomParams {
   activeTool: EditorToolId

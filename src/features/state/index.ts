@@ -1,6 +1,6 @@
 export {
   EditorProvider,
-} from './EditorContext'
+} from './context'
 
 export {
   useCanvasCommandDomain,
@@ -13,4 +13,4 @@ export {
   useSelectionQueryDomain,
   useToolDomain,
   useViewportDomain,
-} from './domainHooks'
+} from './domain'

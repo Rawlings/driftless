@@ -1,9 +1,9 @@
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
-import type { Element } from '../../core/types'
-import type { EditorToolId } from '../../core/tools'
-import type { SnapGuide } from '../canvas'
-import { useEditorState } from '../../hooks/useEditorState'
-import { useEditorUiStore } from './editorUiStore'
+import type { Element } from '../../../core/types'
+import type { EditorToolId } from '../../../core/tools'
+import type { SnapGuide } from '../../canvas'
+import { useEditorState } from '../model'
+import { useEditorUiStore } from '../store'
 
 interface EditorDataContextValue {
   elements: Element[]

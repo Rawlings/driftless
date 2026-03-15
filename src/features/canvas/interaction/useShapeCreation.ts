@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { Element } from '../../core/types'
-import type { EditorToolId } from '../../core/tools'
-import type { CreatingShapeState, Point } from './canvasTypes'
+import type { Element } from '../../../core/types'
+import type { EditorToolId } from '../../../core/tools'
+import type { CreatingShapeState, Point } from '../model/canvasTypes'
 
 interface UseShapeCreationParams {
   addElement: (type: Element['type'], position?: { left: number; top: number }, styleOverrides?: Partial<Element['styles']>) => string

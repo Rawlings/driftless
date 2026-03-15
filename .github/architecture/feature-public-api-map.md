@@ -21,7 +21,7 @@ Define stable cross-feature public entry points and guardrails.
 
 ## Public Entries
 
-- `src/features/canvas/index.ts`: `Canvas`, `SnapGuide` (from `canvasTypes.ts`)
+- `src/features/canvas/index.ts`: `Canvas`, `SnapGuide` (from `model/canvasTypes.ts`)
 - `src/features/layers/index.ts`: `LayersPanel`
 - `src/features/properties/index.ts`: `PropertiesPanel`
 - `src/features/state/index.ts`: `EditorProvider` + domain hooks
@@ -34,12 +34,14 @@ Define stable cross-feature public entry points and guardrails.
 - No deep cross-feature relative imports under `src/features/**`.
 - Properties and state feature public entries are narrowed to high-level surfaces.
 - Canvas public type API is decoupled from `snapEngine.ts` internals.
+- Internal feature structure is ownership-oriented (`components`, `interaction`, `model`, `domain`, `context`, `store`).
 
 ## Next Steps
 
 1. Maintain public entries as features evolve.
-2. Keep review checks for deep-import regressions active.
+2. Keep deep-import checks in PR review and architecture checklist usage.
 3. Keep exception register empty; add entries only with explicit expiry criteria.
+4. Prefer feature-local barrels for internal discoverability while keeping cross-feature imports on top-level feature entries.
 
 ## Exception Register
 

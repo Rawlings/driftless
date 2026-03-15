@@ -7,27 +7,32 @@ Owner: architecture working group
 
 - Active SPA entry: `src/main.tsx`
 - Route composition handled in `src/App.tsx` (`/`, `/editor`)
-- Canonical style owner: `src/app.css` (`app/app.css` is compatibility alias)
+- Canonical style owner: `src/app.css`
 
 ## Editor State Boundary
 
-- Domain adapter layer: `src/features/state/domainHooks.ts`
+- Context ownership: `src/features/state/context/editorContext.tsx`
+- Domain adapters: `src/features/state/domain/*Domain.ts`
+- Editor data model: `src/features/state/model/editorState.ts`
+- UI store: `src/features/state/store/uiStore.ts`
 - Public feature surface: `src/features/state/index.ts` exports provider + domain hooks only
 - Canvas command domain exposes semantic commands (`startTextEditing`, `stopTextEditing`, `clearSnapGuides`, `updateSnapGuides`, `clearCanvasSelection`)
 
 ## Canvas Interaction Boundary
 
-- Interaction state machine: `src/features/canvas/interactionMachine.ts`
-- Dispatch admission is machine-native (`interactionState.can(event)` in `src/features/canvas/Canvas.tsx`)
+- Canvas components: `src/features/canvas/components/*`
+- Interaction state and gesture hooks: `src/features/canvas/interaction/*`
+- Canvas model contracts and snapping: `src/features/canvas/model/*`
+- Dispatch admission is machine-native (`interactionState.can(event)` in `src/features/canvas/components/Canvas.tsx`)
 - Start side effects (shape/text/edit/pan) are gated on admitted transitions
-- Public canvas type API exposes shared `SnapGuide` from `src/features/canvas/canvasTypes.ts`
+- Public canvas type API exposes shared `SnapGuide` from `src/features/canvas/model/canvasTypes.ts`
 
 ## Property Pipeline Boundary
 
-- Pipeline contracts: `src/utils/propertyPipeline.ts`
-- Registry coordinator: `src/utils/propertyRegistry.ts` (construction/cache internals are private)
-- Feature-facing facade: `src/features/properties/propertyRegistryDomain.ts` (search-only grouped resolution)
-- Properties consumers use `src/features/properties/useGroupedPropertyRegistry.ts`
+- Pipeline contracts: `src/features/properties/model/propertyPipeline.ts`
+- Registry coordinator: `src/features/properties/model/propertyRegistry.ts` (construction/cache internals are private)
+- Feature-facing facade: `src/features/properties/domain/propertyRegistryDomain.ts` (search-only grouped resolution)
+- Properties consumers use `src/features/properties/domain/useGroupedPropertyRegistry.ts`
 
 ## Styling and UI Boundary
 

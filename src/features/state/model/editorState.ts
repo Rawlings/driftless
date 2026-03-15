@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react'
-import type { Element } from '../core/types'
+import type { Element } from '../../../core/types'
 
 export function useEditorState() {
-  const [elements, setElements] = useState<Element[]>([])
+  const [elements, setElements] = useState<Element[]>(() => createStarterElements())
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const selectedId = selectedIds[0] ?? null
 
@@ -272,6 +272,54 @@ export function useEditorState() {
     toggleSelectedLock,
     toggleSelectedVisibility
   }
+}
+
+function createStarterElements(): Element[] {
+  return [
+    {
+      id: 'starter-button',
+      type: 'square',
+      parentId: null,
+      locked: false,
+      hidden: false,
+      styles: {
+        position: 'absolute',
+        left: 820,
+        top: 520,
+        width: 220,
+        height: 56,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: '#0b3a8f',
+        borderRadius: 999,
+        backgroundColor: '#2563eb',
+        boxShadow: 'none'
+      }
+    },
+    {
+      id: 'starter-button-label',
+      type: 'text',
+      parentId: 'starter-button',
+      locked: false,
+      hidden: false,
+      styles: {
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        textMode: 'fixed',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        whiteSpace: 'nowrap',
+        color: '#ffffff',
+        fontSize: 18,
+        fontWeight: 600,
+        lineHeight: 1.2,
+        text: 'Hello world'
+      }
+    }
+  ]
 }
 
 function applyParentPlacement(prev: Element[], id: string, parentId: string | null, insertIndexTopFirst: number) {

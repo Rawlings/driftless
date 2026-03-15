@@ -229,7 +229,7 @@ Example invocation:
   - Named palette: `var(--blue-500)`, `var(--gray-200)`, etc.
 - Tailwind utilities remain acceptable for layout, spacing, sizing, and flex/grid.
 - For color, use Tailwind arbitrary value utilities that reference PrimeReact CSS variables (e.g. `text-[var(--text-color)]`, `bg-[var(--surface-card)]`, `border-[var(--surface-border)]`).
-- Do not introduce custom semantic helper classes in `app/app.css` or `src/app.css` for color tokens when the same can be expressed inline with Tailwind variable utilities.
+- Do not introduce custom semantic helper classes in `src/app.css` for color tokens when the same can be expressed inline with Tailwind variable utilities.
 - For focus treatment, use outline-based styling (e.g. `outline-*`, `outline-offset-*`) rather than border/shadow rings for focus indicators.
 - For docked side rails (Layers/Properties), prefer plain semantic containers over `Panel` when Panel features (toggle/collapse/chrome) are not required.
 - Side rails should dock flush to viewport edges (no outer gap), and default chrome should avoid rounded corners.

@@ -41,7 +41,7 @@ export function IconActionButton({
       className={className ? `${sizeClass} ${className}` : sizeClass}
       tooltip={tooltip ?? ariaLabel}
       tooltipOptions={{ position: 'top', showDelay: 120 }}
-      onClick={(event) => onClick(event.originalEvent as MouseEvent<HTMLButtonElement>)}
+      onClick={onClick}
     />
   )
 }

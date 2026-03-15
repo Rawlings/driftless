@@ -75,7 +75,7 @@ Use this quick map before implementation:
 - Canonical architecture target-state guidance lives in `architecture/governance/target-state/editor-architecture/SKILL.md`.
 - Governance and validation skills should reference that target-state skill rather than duplicating policy text.
 
-- Runtime product code must use product-oriented structure such as `src/features`, `src/components`, `src/core`, and `src/hooks`.
+- Runtime product code must use product-oriented structure such as `src/features` and `src/core`, with feature internals organized by ownership (for example `components`, `interaction`, `model`, `domain`, `context`, `store`).
 - Do not place runtime UI or domain logic under `src/agents`.
 - Agent terminology is workflow-only and belongs in documentation or Copilot skill/agent configuration, not product runtime folders.
 - Every refactor must remove dead paths and stale imports in the same change.

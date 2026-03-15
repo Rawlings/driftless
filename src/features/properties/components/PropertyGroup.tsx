@@ -1,5 +1,5 @@
-import type { PropertyDefinition } from './propertyRegistryDomain'
-import type { Element } from '../../core/types'
+import type { PropertyDefinition } from '../domain'
+import type { Element } from '../../../core/types'
 import { PropertyInput } from './PropertyInput'
 
 interface Props {

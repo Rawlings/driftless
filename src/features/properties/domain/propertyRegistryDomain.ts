@@ -1,9 +1,9 @@
-import { getDefaultPropertyPipeline } from '../../utils/propertyPipeline'
+import { getDefaultPropertyPipeline } from '../model'
 import {
   getPropertyRegistry,
   groupProperties,
   type PropertyDefinition,
-} from '../../utils/propertyRegistry'
+} from '../model'
 
 export type { PropertyDefinition }
 

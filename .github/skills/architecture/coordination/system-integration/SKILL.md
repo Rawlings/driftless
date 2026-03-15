@@ -8,7 +8,7 @@ metadata:
 
 ## Guardrails
 
-- Integrate runtime code through product modules under `src/features`, `src/core`, `src/hooks`, and `src/components`.
+- Integrate runtime code through product modules under `src/features` and `src/core`, and keep feature internals organized by ownership (`components`, `interaction`, `model`, `domain`, `context`, `store`).
 - Use feature-level state boundaries (context/store/service) to avoid deep prop drilling of editor state and actions.
 - Treat agent concepts as development workflow helpers, not runtime folder names.
 - Reject structures that introduce or preserve runtime code under `src/agents`.

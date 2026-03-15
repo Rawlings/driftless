@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import {
   getGroupedPropertyDefinitions,
   type PropertyDefinition,
-} from './propertyRegistryDomain'
+} from './'
 
 export function useGroupedPropertyRegistry(
   search: string

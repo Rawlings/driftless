@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Accordion, AccordionTab } from 'primereact/accordion'
-import { usePropertiesCommandDomain, usePropertiesQueryDomain } from '../state'
-import { PanelEmptyState, PanelSearchInput, SideRail } from '../ui'
+import { usePropertiesCommandDomain, usePropertiesQueryDomain } from '../../state'
+import { PanelEmptyState, PanelSearchInput, SideRail } from '../../ui'
 import { PropertyGroup } from './PropertyGroup'
-import { useGroupedPropertyRegistry } from './useGroupedPropertyRegistry'
+import { useGroupedPropertyRegistry } from '../domain'
 
 export function PropertiesPanel() {
   const { selectedElement } = usePropertiesQueryDomain()

@@ -1,5 +1,5 @@
 import { assign, createMachine, type SnapshotFrom } from 'xstate'
-import { isShapeTool, isTextTool, type EditorToolId } from '../../core/tools'
+import { isShapeTool, isTextTool, type EditorToolId } from '../../../core/tools'
 
 interface CanvasPoint {
   x: number

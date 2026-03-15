@@ -1,2 +1,2 @@
-export { Canvas } from './Canvas'
-export type { SnapGuide } from './canvasTypes'
+export { Canvas } from './components'
+export type { SnapGuide } from './model'

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import type { Element } from '../../core/types'
+import type { Element } from '../../../core/types'
 import { ElementRenderer } from './ElementRenderer'
-import type { SnapGuide } from './canvasTypes'
-import type { CanvasInteractionEvent } from './interactionMachine'
+import type { SnapGuide } from '../model/canvasTypes'
+import type { CanvasInteractionEvent } from '../interaction/interactionMachine'
 
 interface CanvasSceneProps {
   elements: Element[]

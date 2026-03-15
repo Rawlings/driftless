@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
-import type { Element } from '../../core/types'
-import type { Point } from './canvasTypes'
+import type { Element } from '../../../core/types'
+import type { Point } from '../model/canvasTypes'
 
 interface MarqueeState {
   startX: number

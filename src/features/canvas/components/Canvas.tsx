@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useMachine } from '@xstate/react'
-import { useCanvasCommandDomain, useCanvasQueryDomain } from '../state'
+import { useCanvasCommandDomain, useCanvasQueryDomain } from '../../state'
 import { CanvasScene } from './CanvasScene'
 import {
   canvasInteractionMachine,
@@ -8,11 +8,11 @@ import {
   resolveCanvasBackgroundResolution,
   resolveCanvasPointerDownAction,
   type CanvasInteractionEvent,
-} from './interactionMachine'
-import { useCanvasPanZoom } from './useCanvasPanZoom'
-import { useMarqueeSelection } from './useMarqueeSelection'
-import { useShapeCreation } from './useShapeCreation'
-import { useTextCreation } from './useTextCreation'
+} from '../interaction/interactionMachine'
+import { useCanvasPanZoom } from '../interaction/useCanvasPanZoom'
+import { useMarqueeSelection } from '../interaction/useMarqueeSelection'
+import { useShapeCreation } from '../interaction/useShapeCreation'
+import { useTextCreation } from '../interaction/useTextCreation'
 
 export function Canvas() {
   const [interactionState, sendInteraction] = useMachine(canvasInteractionMachine)

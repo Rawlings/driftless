@@ -20,6 +20,7 @@ A feature imports sibling internals directly (for example, importing from nested
 2. Move callsites to boundary imports.
 3. Remove old deep import usage in the same change.
 4. If temporary exception is required, document it in `.github/architecture/feature-public-api-map.md` with owner and expiry.
+5. Verify with targeted code search in review (no hidden deep imports left under `src/features/**`).
 
 ## 2) Multi-Level State Prop Threading
 

@@ -9,7 +9,7 @@ metadata:
 ## Objectives
 
 - Align tactical guardrails to the canonical editor target-state architecture skill.
-- Keep runtime architecture product-oriented: `src/features`, `src/core`, `src/hooks`, `src/components`.
+- Keep runtime architecture product-oriented: `src/features` and `src/core`, with feature internals grouped by ownership (`components`, `interaction`, `model`, `domain`, `context`, `store`).
 - Prevent anti-patterns that degrade scale, especially state prop drilling across feature trees.
 - Ensure refactors are complete: no dead folders, no stale imports, no mixed old/new structures.
 - Prioritize proven dependencies for non-differentiating infrastructure to reduce custom maintenance burden.

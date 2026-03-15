@@ -22,6 +22,7 @@ This directory operationalizes the editor architecture target state.
 - Every refactor PR includes rollback notes and risk checks.
 - Every architecture-sensitive PR should complete the checklist in `.github/pull_request_template.md`.
 - If a temporary boundary exception is required, record owner and expiry in `.github/architecture/feature-public-api-map.md`.
+- Keep runtime structure product-oriented under `src/features` and `src/core`, with feature internals grouped by ownership (`components`, `interaction`, `model`, `domain`, `context`, `store`).
 
 ## Definition Of Progress
 
