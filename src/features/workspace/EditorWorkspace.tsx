@@ -1,4 +1,4 @@
-import { Toolbar } from './Toolbar'
+import { Toolbar } from '../toolbar/Toolbar'
 import { Canvas } from '../canvas/Canvas'
 import { PropertiesPanel } from '../properties/PropertiesPanel'
 import { LayersPanel } from '../layers/LayersPanel'

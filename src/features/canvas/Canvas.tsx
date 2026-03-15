@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDrag } from '@use-gesture/react'
 import { ElementRenderer } from './ElementRenderer'
-import type { Element } from '../../../core/editor/types'
-import { isShapeTool, isTextTool } from '../../../core/editor/tools'
+import type { Element } from '../../core/types'
+import { isShapeTool, isTextTool } from '../../core/tools'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
 
 interface CreatingShapeState {
@@ -25,7 +25,7 @@ interface CreatingTextState {
 }
 
 export function Canvas() {
-  const { elements, selectedId, activeTool, viewportOffset } = useEditorData()
+  const { elements, selectedId, activeTool, viewportOffset, snapGuides } = useEditorData()
   const { addElement, clearSelection, setActiveTool, setViewportOffset, updateElement, setEditingTextId } = useEditorCommands()
   const [isPanning, setIsPanning] = useState(false)
   const [creatingShape, setCreatingShape] = useState<CreatingShapeState | null>(null)
@@ -124,7 +124,7 @@ export function Canvas() {
       return
     }
 
-    if (activeTool === 'move') {
+    if (activeTool === 'move' || activeTool === 'scale') {
       setEditingTextId(null)
       clearSelection()
     }
@@ -294,6 +294,8 @@ export function Canvas() {
 
   const canvasCursorClass = activeTool === 'hand'
     ? (isPanning ? 'cursor-grabbing' : 'cursor-grab')
+    : activeTool === 'scale'
+      ? 'cursor-se-resize'
     : isShapeTool(activeTool)
       ? 'cursor-crosshair'
       : 'cursor-default'
@@ -325,6 +327,13 @@ export function Canvas() {
             </ElementRenderer>
           )
         })}
+
+        {/* Snap guide lines */}
+        {snapGuides.map((guide, i) =>
+          guide.type === 'v'
+            ? <div key={i} className="pointer-events-none absolute inset-y-0 w-px bg-blue-500/60" style={{ left: guide.position }} />
+            : <div key={i} className="pointer-events-none absolute inset-x-0 h-px bg-blue-500/60" style={{ top: guide.position }} />
+        )}
       </div>
     </div>
   )

@@ -10,7 +10,7 @@ metadata:
 
 - Make selection and movement fast, predictable, and reversible.
 - Separate object manipulation from viewport navigation to prevent accidental edits.
-- Support temporary navigation override without mode confusion.
+- Keep primary navigation tools compact with one consolidated toolbar control.
 
 ## Tool Set
 
@@ -25,15 +25,28 @@ metadata:
   - Resize entire selected objects or groups proportionally.
   - Preserve aspect ratio by default with optional modifier override.
 
+## Toolbar Navigation Dropdown Pattern
+
+- Move, Hand, and Scale are represented by one toolbar slot.
+- Main button:
+  - Shows the icon of the active navigation tool when one is active.
+  - Otherwise shows the last-used navigation tool (default Move).
+  - Click activates the displayed navigation tool.
+- Chevron trigger badge:
+  - Opens a menu with Move, Hand, and Scale.
+  - Choosing an item activates it, updates last-used, and closes the menu.
+- Selected state:
+  - Main button uses selected styling when any navigation tool is active.
+- Tooltip:
+  - Shows current navigation tool label and short behavior summary.
+  - Tooltip is hidden while the dropdown is open.
+
 ## UX Behavior Model
 
 - Move defaults:
   - Click empty canvas clears selection.
   - Click object selects it.
   - Drag selected object starts move after threshold to avoid jitter.
-- Temporary hand override:
-  - Holding Space switches to Hand while pressed.
-  - Releasing Space returns to previous tool.
 - Cursor and affordance:
   - Move: directional move cursor on draggable objects.
   - Hand: grab and grabbing cursor states.
@@ -45,14 +58,11 @@ metadata:
 - Use one history entry per completed drag or scale gesture.
 - Keep selection stable when panning.
 - If touch input is detected, hand panning must remain frictionless and non-selecting.
+- Hand mode must never change selection when pressing existing elements.
+- Move and Scale modes may select elements; creation modes must not steal selection from existing elements.
 
-## Accessibility and Shortcuts
+## Accessibility
 
-- Keyboard shortcuts:
-  - V activates Move.
-  - H activates Hand.
-  - K activates Scale.
-  - Space temporarily activates Hand.
 - Announce active tool changes to assistive tech.
 - Maintain visible focus style on toolbar buttons.
 
@@ -60,5 +70,5 @@ metadata:
 
 - Move is active by default on open.
 - Hand never changes selection or object geometry.
-- Space override enters and exits Hand without losing prior tool.
+- Move, Hand, and Scale are reachable from one dropdown control.
 - Scale changes object dimensions consistently and creates clean undo boundaries.

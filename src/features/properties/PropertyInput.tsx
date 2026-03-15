@@ -1,4 +1,4 @@
-import type { PropertyDefinition } from '../../../utils/propertyRegistry'
+import type { PropertyDefinition } from '../../utils/propertyRegistry'
 import { cn, uiTokens } from '../ui/tokens'
 
 interface PropertyInputProps {

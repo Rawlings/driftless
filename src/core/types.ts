@@ -2,6 +2,8 @@ export interface Element {
   id: string
   type: 'line' | 'circle' | 'square' | 'text'
   parentId?: string | null
+  locked?: boolean
+  hidden?: boolean
   styles: { [key: string]: any }
 }
 

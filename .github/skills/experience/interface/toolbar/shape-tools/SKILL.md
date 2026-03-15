@@ -25,18 +25,43 @@ metadata:
 ## UX Behavior Model
 
 - Family defaults:
-  - Rectangle is default shape in the shape family.
-  - Last-used shape can be restored for speed.
+  - Rectangle is the default shape in the shape family.
+  - Last-used shape is remembered and restored when re-entering the shape tool.
 - Creation modes:
   - Press and drag creates shape with live bounds preview.
   - Release commits final geometry.
-  - Click without drag falls back to default size.
+  - Click without drag falls back to a sensible default size (100×100).
 - Constraints:
   - Shift enforces equal dimensions for rectangle and ellipse.
   - Alt or Option draws from center.
 - Shape-specific controls:
   - Arrow includes start and end styling.
   - Polygon and star expose point count and corner smoothness.
+
+## Toolbar Shape Dropdown Pattern
+
+All shape tools are consolidated into a single toolbar slot to reduce clutter.
+
+### Anatomy
+- **Main button** (full 44×44 hit area): shows the icon of the last-used or currently-active shape.
+  - Click activates the remembered shape tool immediately.
+  - When a shape tool is already active, clicking keeps it active.
+- **Dropdown indicator** (small chevron badge in the bottom-right corner):
+  - Click opens or closes the shape picker panel.
+  - Visually subtle — 16×16 px, white background, border.
+- **Shape picker panel**: floats above the toolbar, center-aligned to the button.
+  - Lists all available shape variants with icon, label, and shortcut badge.
+  - Active row highlighted in blue.
+  - Clicking a row activates that tool, updates the button icon, and closes the panel.
+  - Clicking outside the panel closes it.
+
+### Selected state
+- The main button shows `toolbarSelected` style whenever any shape tool is active.
+- The icon always reflects the currently active shape (if active) or last-used shape.
+
+### Tooltip
+- Shows the active shape name and shortcut, plus the hint about switching type.
+- Suppressed while the dropdown is open.
 
 ## Media Placement Model
 

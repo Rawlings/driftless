@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { ArrowDown, ArrowUp, ChevronRight, Circle, Minus, Slash, Square, Type } from 'lucide-react'
-import type { Element } from '../../../core/editor/types'
+import { ArrowDown, ArrowUp, ChevronRight, Circle, EyeOff, Lock, Minus, Slash, Square, Type } from 'lucide-react'
+import type { Element } from '../../core/types'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
 import { cn, uiTokens } from '../ui/tokens'
 
@@ -148,8 +148,7 @@ export function LayersPanel() {
           'fixed left-4 top-1/2 z-40 -translate-y-1/2 rounded-r-xl px-2 py-3',
           uiTokens.control.iconButton,
           uiTokens.motion.control,
-          uiTokens.control.iconButtonHover,
-          uiTokens.control.iconButtonActive,
+          uiTokens.control.iconButtonInteractive,
           uiTokens.focus.ring,
           'border-slate-300 bg-white shadow'
         )}
@@ -191,8 +190,7 @@ export function LayersPanel() {
             className={cn(
               uiTokens.control.iconButton,
               uiTokens.motion.control,
-              uiTokens.control.iconButtonHover,
-              uiTokens.control.iconButtonActive,
+              uiTokens.control.iconButtonInteractive,
               uiTokens.focus.ring,
               'p-1.5'
             )}
@@ -288,12 +286,14 @@ export function LayersPanel() {
                             {getLayerIcon(element.type)}
                           </span>
                           <span className={`truncate text-sm ${isSelected ? 'font-semibold text-blue-900' : 'text-slate-800'}`}>{label}</span>
+                          {element.locked ? <Lock className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" /> : null}
+                          {element.hidden ? <EyeOff className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" /> : null}
                         </button>
 
                         <div className="flex items-center gap-1 opacity-0 transition-opacity duration-150 ease-out group-hover:opacity-100">
                           <button
                             type="button"
-                            className={cn(uiTokens.control.iconButton, uiTokens.motion.control, uiTokens.control.iconButtonHover, uiTokens.focus.ring, 'px-1.5 py-0.5 text-xs text-slate-600')}
+                            className={cn(uiTokens.control.iconButton, uiTokens.motion.control, uiTokens.control.iconButtonInteractive, uiTokens.focus.ring, 'px-1.5 py-0.5 text-xs text-slate-600')}
                             title="Send backward"
                             onClick={() => moveElementLayer(element.id, 'down')}
                           >
@@ -301,7 +301,7 @@ export function LayersPanel() {
                           </button>
                           <button
                             type="button"
-                            className={cn(uiTokens.control.iconButton, uiTokens.motion.control, uiTokens.control.iconButtonHover, uiTokens.focus.ring, 'px-1.5 py-0.5 text-xs text-slate-600')}
+                            className={cn(uiTokens.control.iconButton, uiTokens.motion.control, uiTokens.control.iconButtonInteractive, uiTokens.focus.ring, 'px-1.5 py-0.5 text-xs text-slate-600')}
                             title="Bring forward"
                             onClick={() => moveElementLayer(element.id, 'up')}
                           >

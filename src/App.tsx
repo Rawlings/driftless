@@ -1,12 +1,7 @@
-import { Routes, Route } from 'react-router-dom'
-import Home from './routes/home'
+import { EditorWorkspace } from './features/workspace/EditorWorkspace'
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
-  )
+  return <EditorWorkspace />
 }
 
 export default App

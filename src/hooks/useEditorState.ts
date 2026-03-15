@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import type { Element } from '../../core/editor/types'
+import type { Element } from '../core/types'
 
 export function useEditorState() {
   const [elements, setElements] = useState<Element[]>([])
@@ -48,6 +48,8 @@ export function useEditorState() {
       id,
       type,
       parentId: null,
+      locked: false,
+      hidden: false,
       styles
     }
     setElements(prev => [...prev, newElement])
@@ -119,6 +121,121 @@ export function useEditorState() {
     setElements((prev) => applyParentPlacement(prev, id, parentId, insertIndexTopFirst))
   }, [])
 
+  const deleteSelectedElement = useCallback(() => {
+    if (!selectedId) {
+      return
+    }
+
+    setElements((prev) => {
+      const idSet = new Set<string>([selectedId])
+
+      let changed = true
+      while (changed) {
+        changed = false
+        for (const element of prev) {
+          if (element.parentId && idSet.has(element.parentId) && !idSet.has(element.id)) {
+            idSet.add(element.id)
+            changed = true
+          }
+        }
+      }
+
+      return prev.filter((element) => !idSet.has(element.id))
+    })
+    setSelectedId(null)
+  }, [selectedId])
+
+  const duplicateSelectedElement = useCallback(() => {
+    if (!selectedId) {
+      return
+    }
+
+    setElements((prev) => {
+      const byId = new Map(prev.map((element) => [element.id, element]))
+      const root = byId.get(selectedId)
+      if (!root) {
+        return prev
+      }
+
+      const subtree: Element[] = []
+      const queue: string[] = [selectedId]
+      while (queue.length > 0) {
+        const currentId = queue.shift()
+        if (!currentId) {
+          continue
+        }
+        const current = byId.get(currentId)
+        if (!current) {
+          continue
+        }
+        subtree.push(current)
+        prev.forEach((element) => {
+          if (element.parentId === currentId) {
+            queue.push(element.id)
+          }
+        })
+      }
+
+      const idMap = new Map<string, string>()
+      subtree.forEach((element, index) => {
+        idMap.set(element.id, `${Date.now()}-${index}-${Math.random().toString(36).slice(2, 7)}`)
+      })
+
+      const duplicates = subtree.map((element) => {
+        const mappedParent = element.parentId ? idMap.get(element.parentId) ?? element.parentId : null
+        const left = Number(element.styles.left ?? 0)
+        const top = Number(element.styles.top ?? 0)
+
+        return {
+          ...element,
+          id: idMap.get(element.id)!,
+          parentId: mappedParent,
+          styles: {
+            ...element.styles,
+            left: left + 24,
+            top: top + 24
+          }
+        }
+      })
+
+      const next = [...prev, ...duplicates]
+      setSelectedId(idMap.get(selectedId) ?? selectedId)
+      return next
+    })
+  }, [selectedId])
+
+  const toggleSelectedLock = useCallback(() => {
+    if (!selectedId) {
+      return
+    }
+
+    setElements((prev) => prev.map((element) => {
+      if (element.id !== selectedId) {
+        return element
+      }
+      return {
+        ...element,
+        locked: !element.locked
+      }
+    }))
+  }, [selectedId])
+
+  const toggleSelectedVisibility = useCallback(() => {
+    if (!selectedId) {
+      return
+    }
+
+    setElements((prev) => prev.map((element) => {
+      if (element.id !== selectedId) {
+        return element
+      }
+      return {
+        ...element,
+        hidden: !element.hidden
+      }
+    }))
+  }, [selectedId])
+
   const selectedElement = selectedId ? elements.find(el => el.id === selectedId) || null : null
 
   return {
@@ -131,7 +248,11 @@ export function useEditorState() {
     moveElementLayer,
     reorderElements,
     setElementParent,
-    setElementParentAt
+    setElementParentAt,
+    deleteSelectedElement,
+    duplicateSelectedElement,
+    toggleSelectedLock,
+    toggleSelectedVisibility
   }
 }
 

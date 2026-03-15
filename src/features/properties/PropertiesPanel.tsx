@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronLeft, Minus } from 'lucide-react'
-import { getPropertyRegistry, groupProperties } from '../../../utils/propertyRegistry'
+import { getPropertyRegistry, groupProperties } from '../../utils/propertyRegistry'
 import { PropertyInput } from './PropertyInput'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
 import { cn, uiTokens } from '../ui/tokens'
@@ -63,8 +63,7 @@ export function PropertiesPanel() {
           'fixed right-4 top-1/2 z-40 -translate-y-1/2 rounded-l-xl px-2 py-3',
           uiTokens.control.iconButton,
           uiTokens.motion.control,
-          uiTokens.control.iconButtonHover,
-          uiTokens.control.iconButtonActive,
+          uiTokens.control.iconButtonInteractive,
           uiTokens.focus.ring,
           'border-slate-300 bg-white shadow'
         )}
@@ -95,8 +94,7 @@ export function PropertiesPanel() {
             className={cn(
               uiTokens.control.iconButton,
               uiTokens.motion.control,
-              uiTokens.control.iconButtonHover,
-              uiTokens.control.iconButtonActive,
+              uiTokens.control.iconButtonInteractive,
               uiTokens.focus.ring,
               'p-1.5'
             )}

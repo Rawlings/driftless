@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import type { Element } from '../../core/editor/types'
-import type { EditorToolId } from '../../core/editor/tools'
+import type { Element } from '../core/types'
+import type { EditorToolId } from '../core/tools'
 
 interface UseInteractionsProps {
   selectedId: string | null

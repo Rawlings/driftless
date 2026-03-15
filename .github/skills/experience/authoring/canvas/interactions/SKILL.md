@@ -39,6 +39,32 @@ metadata:
   - panning must never clear selection
   - hand gestures never mutate object geometry
 
+## Tool Combination Matrix
+
+- Hand + element press:
+  - never selects objects
+  - always preserves current selection while panning
+- Move + element press:
+  - selects target, then allows dragging if not locked
+- Scale + element press:
+  - selects target, then allows resize handles if not locked
+- Shape creation tools + element press:
+  - do not retarget selection implicitly
+  - creation starts only from stage/background pointer-down
+- Text tool + text element press:
+  - allows text-target selection and edit entry by existing text interactions
+- Locked element:
+  - selectable for inspection
+  - geometry mutation (move/resize) is blocked
+- Hidden element:
+  - excluded from hit testing and render tree
+
+## Temporary Override Rules
+
+- Space key engages temporary hand tool while held.
+- Releasing Space restores previously selected tool deterministically.
+- Temporary override must be centralized in the editor state boundary, not local component state.
+
 ## Anti-Patterns To Avoid
 
 - Scattered `stopPropagation` logic across multiple layers without an ownership map.

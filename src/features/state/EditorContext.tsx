@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { Element } from '../../../core/editor/types'
-import type { EditorToolId } from '../../../core/editor/tools'
-import { useEditorState } from '../../../hooks/editor/useEditorState'
+import type { Element } from '../../core/types'
+import type { EditorToolId } from '../../core/tools'
+import type { SnapGuide } from '../canvas/snapEngine'
+import { useEditorState } from '../../hooks/useEditorState'
 
 interface EditorDataContextValue {
   elements: Element[]
@@ -10,6 +11,7 @@ interface EditorDataContextValue {
   activeTool: EditorToolId
   viewportOffset: { x: number; y: number }
   editingTextId: string | null
+  snapGuides: SnapGuide[]
 }
 
 interface EditorCommandsContextValue {
@@ -19,11 +21,16 @@ interface EditorCommandsContextValue {
   reorderElements: (orderedIds: string[]) => void
   setElementParent: (id: string, parentId: string | null) => void
   setElementParentAt: (id: string, parentId: string | null, insertIndexTopFirst: number) => void
+  deleteSelectedElement: () => void
+  duplicateSelectedElement: () => void
+  toggleSelectedLock: () => void
+  toggleSelectedVisibility: () => void
   selectElement: (id: string | null) => void
   clearSelection: () => void
   setActiveTool: (tool: EditorToolId) => void
   setViewportOffset: (offset: { x: number; y: number }) => void
   setEditingTextId: (id: string | null) => void
+  setSnapGuides: (guides: SnapGuide[]) => void
 }
 
 const EditorDataContext = createContext<EditorDataContextValue | null>(null)
@@ -33,6 +40,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const [activeTool, setActiveTool] = useState<EditorToolId>('move')
   const [viewportOffset, setViewportOffset] = useState({ x: 0, y: 0 })
   const [editingTextId, setEditingTextId] = useState<string | null>(null)
+  const [snapGuides, setSnapGuides] = useState<SnapGuide[]>([])
 
   const {
     elements,
@@ -44,7 +52,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     moveElementLayer,
     reorderElements,
     setElementParent,
-    setElementParentAt
+    setElementParentAt,
+    deleteSelectedElement,
+    duplicateSelectedElement,
+    toggleSelectedLock,
+    toggleSelectedVisibility
   } = useEditorState()
 
   const selectElement = useCallback((id: string | null) => {
@@ -61,8 +73,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     selectedElement,
     activeTool,
     viewportOffset,
-    editingTextId
-  }), [elements, selectedId, selectedElement, activeTool, viewportOffset, editingTextId])
+    editingTextId,
+    snapGuides
+  }), [elements, selectedId, selectedElement, activeTool, viewportOffset, editingTextId, snapGuides])
 
   const commandsValue = useMemo<EditorCommandsContextValue>(() => ({
     addElement,
@@ -71,12 +84,17 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     reorderElements,
     setElementParent,
     setElementParentAt,
+    deleteSelectedElement,
+    duplicateSelectedElement,
+    toggleSelectedLock,
+    toggleSelectedVisibility,
     selectElement,
     clearSelection,
     setActiveTool,
     setViewportOffset,
-    setEditingTextId
-  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, selectElement, clearSelection, setActiveTool, setViewportOffset, setEditingTextId])
+    setEditingTextId,
+    setSnapGuides
+  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, deleteSelectedElement, duplicateSelectedElement, toggleSelectedLock, toggleSelectedVisibility, selectElement, clearSelection, setActiveTool, setViewportOffset, setEditingTextId, setSnapGuides])
 
   return (
     <EditorDataContext.Provider value={dataValue}>
