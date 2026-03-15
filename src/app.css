@@ -9,9 +9,13 @@
 
 html,
 body {
-  @apply bg-white text-base leading-6 dark:bg-gray-950;
+  @apply bg-[var(--surface-ground)] text-[var(--text-color)] text-base leading-6;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+}
+
+:focus-visible {
+  @apply outline-2 outline-[var(--primary-color)] outline-offset-[-3px];
 }

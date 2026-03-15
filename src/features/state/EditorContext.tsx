@@ -10,12 +10,17 @@ interface EditorDataContextValue {
   selectedElement: Element | null
   activeTool: EditorToolId
   viewportOffset: { x: number; y: number }
+  viewportScale: number
   editingTextId: string | null
   snapGuides: SnapGuide[]
 }
 
 interface EditorCommandsContextValue {
-  addElement: (type: Element['type'], position?: { left: number; top: number }) => string
+  addElement: (
+    type: Element['type'],
+    position?: { left: number; top: number },
+    styleOverrides?: Partial<Element['styles']>
+  ) => string
   updateElement: (id: string, updates: Partial<Element>) => void
   moveElementLayer: (id: string, direction: 'up' | 'down' | 'front' | 'back') => void
   reorderElements: (orderedIds: string[]) => void
@@ -29,6 +34,7 @@ interface EditorCommandsContextValue {
   clearSelection: () => void
   setActiveTool: (tool: EditorToolId) => void
   setViewportOffset: (offset: { x: number; y: number }) => void
+  setViewportScale: (scale: number) => void
   setEditingTextId: (id: string | null) => void
   setSnapGuides: (guides: SnapGuide[]) => void
 }
@@ -39,6 +45,7 @@ const EditorCommandsContext = createContext<EditorCommandsContextValue | null>(n
 export function EditorProvider({ children }: { children: ReactNode }) {
   const [activeTool, setActiveTool] = useState<EditorToolId>('move')
   const [viewportOffset, setViewportOffset] = useState({ x: 0, y: 0 })
+  const [viewportScale, setViewportScale] = useState(1)
   const [editingTextId, setEditingTextId] = useState<string | null>(null)
   const [snapGuides, setSnapGuides] = useState<SnapGuide[]>([])
 
@@ -73,9 +80,10 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     selectedElement,
     activeTool,
     viewportOffset,
+    viewportScale,
     editingTextId,
     snapGuides
-  }), [elements, selectedId, selectedElement, activeTool, viewportOffset, editingTextId, snapGuides])
+  }), [elements, selectedId, selectedElement, activeTool, viewportOffset, viewportScale, editingTextId, snapGuides])
 
   const commandsValue = useMemo<EditorCommandsContextValue>(() => ({
     addElement,
@@ -92,9 +100,10 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     clearSelection,
     setActiveTool,
     setViewportOffset,
+    setViewportScale,
     setEditingTextId,
     setSnapGuides
-  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, deleteSelectedElement, duplicateSelectedElement, toggleSelectedLock, toggleSelectedVisibility, selectElement, clearSelection, setActiveTool, setViewportOffset, setEditingTextId, setSnapGuides])
+  }), [addElement, updateElement, moveElementLayer, reorderElements, setElementParent, setElementParentAt, deleteSelectedElement, duplicateSelectedElement, toggleSelectedLock, toggleSelectedVisibility, selectElement, clearSelection, setActiveTool, setViewportOffset, setViewportScale, setEditingTextId, setSnapGuides])
 
   return (
     <EditorDataContext.Provider value={dataValue}>

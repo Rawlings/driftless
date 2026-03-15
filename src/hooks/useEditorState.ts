@@ -5,7 +5,11 @@ export function useEditorState() {
   const [elements, setElements] = useState<Element[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const addElement = useCallback((type: Element['type'], position?: { left: number; top: number }) => {
+  const addElement = useCallback((
+    type: Element['type'],
+    position?: { left: number; top: number },
+    styleOverrides?: Partial<Element['styles']>
+  ) => {
     const id = Date.now().toString()
     const baseStyles = {
       position: 'absolute',
@@ -50,7 +54,10 @@ export function useEditorState() {
       parentId: null,
       locked: false,
       hidden: false,
-      styles
+      styles: {
+        ...styles,
+        ...(styleOverrides ?? {})
+      }
     }
     setElements(prev => [...prev, newElement])
     setSelectedId(id)

@@ -1,8 +1,17 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { Rnd } from 'react-rnd'
 import type { Element } from '../../core/types'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
 import { computeSnap, type SnapRect } from './snapEngine'
+
+interface DragSnapInput {
+  x: number
+  y: number
+  width: number
+  height: number
+  id: string
+  parentId?: string | null
+}
 
 interface ElementRendererProps {
   element: Element
@@ -15,7 +24,7 @@ export function ElementRenderer({
   isSelected,
   children
 }: ElementRendererProps) {
-  const { activeTool, editingTextId, elements } = useEditorData()
+  const { activeTool, editingTextId, elements, viewportScale } = useEditorData()
   const { selectElement, setEditingTextId, updateElement, setSnapGuides } = useEditorCommands()
   const textEditorRef = useRef<HTMLDivElement | null>(null)
 
@@ -32,8 +41,11 @@ export function ElementRenderer({
   const canDrag = activeTool === 'move' && !isEditingText
   const canResize = (activeTool === 'move' || activeTool === 'scale') && !isEditingText
   const isLocked = Boolean(element.locked)
+  const guideRafRef = useRef<number | null>(null)
+  const pendingDragRectRef = useRef<DragSnapInput | null>(null)
+  const lastGuidesKeyRef = useRef('')
 
-  const snapCandidates = (): SnapRect[] =>
+  const snapCandidates = useMemo<SnapRect[]>(() =>
     elements
       .filter((el) => el.id !== element.id && !el.hidden && !el.locked)
       .map((el) => ({
@@ -43,7 +55,45 @@ export function ElementRenderer({
         width: Number(el.styles.width ?? 0),
         height: Number(el.styles.height ?? 0),
         parentId: el.parentId ?? null
-      }))
+      })), [elements, element.id])
+
+  const guidesKey = (guides: Array<{ type: 'v' | 'h'; position: number }>) =>
+    guides.map((guide) => `${guide.type}:${Math.round(guide.position)}`).join('|')
+
+  const flushDragGuides = () => {
+    const rect = pendingDragRectRef.current
+    if (!rect) {
+      return
+    }
+
+    const result = computeSnap(rect, snapCandidates)
+    const key = guidesKey(result.guides)
+
+    if (key !== lastGuidesKeyRef.current) {
+      lastGuidesKeyRef.current = key
+      setSnapGuides(result.guides)
+    }
+  }
+
+  const scheduleDragGuides = (rect: DragSnapInput) => {
+    pendingDragRectRef.current = rect
+    if (guideRafRef.current != null) {
+      return
+    }
+
+    guideRafRef.current = window.requestAnimationFrame(() => {
+      guideRafRef.current = null
+      flushDragGuides()
+    })
+  }
+
+  useEffect(() => {
+    return () => {
+      if (guideRafRef.current != null) {
+        window.cancelAnimationFrame(guideRafRef.current)
+      }
+    }
+  }, [])
 
   if (element.hidden) {
     return null
@@ -89,6 +139,7 @@ export function ElementRenderer({
 
   return (
     <Rnd
+      scale={viewportScale}
       size={{ width, height }}
       position={{ x: left, y: top }}
       disableDragging={!canDrag || isLocked}
@@ -113,19 +164,30 @@ export function ElementRenderer({
       }}
       onDrag={(_, data) => {
         if (isLocked) return
-        const result = computeSnap(
-          { x: data.x, y: data.y, width: Number(width), height: Number(height), id: element.id, parentId: element.parentId ?? null },
-          snapCandidates()
-        )
-        setSnapGuides(result.guides)
+        scheduleDragGuides({
+          x: data.x,
+          y: data.y,
+          width: Number(width),
+          height: Number(height),
+          id: element.id,
+          parentId: element.parentId ?? null
+        })
       }}
       onDragStop={(_, data) => {
         if (isLocked) return
+
+        if (guideRafRef.current != null) {
+          window.cancelAnimationFrame(guideRafRef.current)
+          guideRafRef.current = null
+        }
+
         const result = computeSnap(
           { x: data.x, y: data.y, width: Number(width), height: Number(height), id: element.id, parentId: element.parentId ?? null },
-          snapCandidates()
+          snapCandidates
         )
         setSnapGuides([])
+        pendingDragRectRef.current = null
+        lastGuidesKeyRef.current = ''
         updateElement(element.id, {
           styles: { ...element.styles, left: result.x, top: result.y }
         })
@@ -136,7 +198,7 @@ export function ElementRenderer({
         const h = ref.offsetHeight
         const result = computeSnap(
           { x: position.x, y: position.y, width: w, height: h, id: element.id, parentId: element.parentId ?? null },
-          snapCandidates()
+          snapCandidates
         )
         setSnapGuides([])
         updateElement(element.id, {
@@ -180,7 +242,7 @@ export function ElementRenderer({
               setEditingTextId(null)
             }
           }}
-          className={`${isEditingText ? 'pointer-events-auto select-text rounded-sm px-0.5 outline-none' : 'pointer-events-none select-none'} whitespace-pre-wrap text-inherit ${textMode === 'fixed' ? 'h-full w-full overflow-hidden' : 'inline-block'}`}
+          className={`${isEditingText ? 'pointer-events-auto select-text rounded-sm px-0.5 outline-2 outline-[var(--primary-color)] outline-offset-[-3px]' : 'pointer-events-none select-none'} whitespace-pre-wrap text-inherit ${textMode === 'fixed' ? 'h-full w-full overflow-hidden' : 'inline-block'}`}
         >
           {String(element.styles.text ?? 'Text')}
         </div>
@@ -188,17 +250,17 @@ export function ElementRenderer({
 
       {isSelected && (activeTool === 'move' || activeTool === 'scale') && (
         <div
-          className={`pointer-events-none absolute -inset-1 border-2 border-blue-400/90 shadow-[0_0_0_3px_rgba(59,130,246,0.2)] ${selectionOutlineClass}`}
+          className={`pointer-events-none absolute -inset-1 outline-2 outline-[var(--primary-color)] outline-offset-[-3px] ${selectionOutlineClass}`}
         />
       )}
 
       {isSelected && (activeTool === 'move' || activeTool === 'scale') && !isEditingText && !isLocked && (
         <div
-          className="absolute -bottom-2 -right-2 flex h-5 w-5 cursor-se-resize items-center justify-center rounded-full border-2 border-blue-500 bg-white shadow-md"
+          className="absolute -bottom-2 -right-2 flex h-5 w-5 cursor-se-resize items-center justify-center rounded-full outline-2 outline-[var(--primary-color)] outline-offset-[-1px] bg-[var(--surface-0)] shadow-md"
           title="Resize"
           aria-label="Resize element"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary-color)]" />
         </div>
       )}
 

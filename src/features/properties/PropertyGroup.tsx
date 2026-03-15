@@ -10,10 +10,10 @@ interface Props {
 
 export function PropertyGroup({ props, element, onUpdate }: Props) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {props.map((prop) => (
         <div key={prop.cssProperty}>
-          <div className="mb-1 flex items-center justify-between gap-2">
+          <div className="mb-0.5 flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
               <label className="block font-mono text-xs p-text-secondary">{prop.name}</label>
               {prop.inherited ? <span className="text-xs">Inherited</span> : null}

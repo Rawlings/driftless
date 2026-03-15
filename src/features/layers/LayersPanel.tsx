@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { InputText } from 'primereact/inputtext'
-import { Panel } from 'primereact/panel'
 import { Tree } from 'primereact/tree'
 import { useEditorCommands, useEditorData } from '../state/EditorContext'
 import { findLocation, treePt } from './layerUtils'
@@ -14,28 +13,16 @@ export function LayersPanel() {
   const { filteredNodes, expandedKeys, setExpandedKeys } = useLayerTree(elements, search)
 
   return (
-    <aside className="fixed left-4 top-4 bottom-4 z-30 rounded-xl" style={{ width: 320 }}>
-      <Panel
-        className="flex h-full flex-col rounded-xl border border-slate-300 bg-slate-100"
-        pt={{
-          header: { className: 'shrink-0 border-b border-slate-300 bg-slate-100' },
-          toggleableContent: { className: 'min-h-0 flex-1' },
-          content: { className: 'h-full overflow-y-auto bg-slate-100 p-3' }
-        }}
-        headerTemplate={() => (
-          <div className="flex w-full items-center px-3 py-2">
-            <span className="font-medium">Layers</span>
-          </div>
-        )}
-      >
-        <InputText
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search layers"
-          className="mb-3 w-full"
-        />
+    <aside className="fixed left-0 top-0 bottom-0 z-30" style={{ width: 340 }}>
+      <div className="flex h-full flex-col rounded-none border-0 bg-[var(--surface-card)] shadow-xl">
+        <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--surface-card)] px-4 pt-4 pb-4">
+          <InputText
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search layers"
+            className="mb-4 w-full"
+          />
 
-        <div className="rounded-lg bg-slate-100">
           <Tree
             value={filteredNodes}
             className="border-none"
@@ -59,7 +46,7 @@ export function LayersPanel() {
             }}
           />
         </div>
-      </Panel>
+      </div>
     </aside>
   )
 }

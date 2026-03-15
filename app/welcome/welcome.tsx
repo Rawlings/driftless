@@ -21,15 +21,15 @@ export function Welcome() {
           </div>
         </header>
         <div className="max-w-[300px] w-full space-y-6 px-4">
-          <nav className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
-            <p className="leading-6 text-gray-700 dark:text-gray-200 text-center">
+          <nav className="space-y-4 rounded-3xl border border-[var(--surface-border)] p-6">
+            <p className="text-center leading-6 text-[var(--text-color-secondary)]">
               What&apos;s next?
             </p>
             <ul>
               {resources.map(({ href, text, icon }) => (
                 <li key={href}>
                   <a
-                    className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
+                    className="group flex items-center gap-3 self-stretch p-3 leading-normal text-[var(--primary-color)] hover:underline"
                     href={href}
                     target="_blank"
                     rel="noreferrer"
@@ -51,11 +51,11 @@ const resources = [
   {
     href: "https://rawlings.github.io/rui/",
     text: "RUI Live Site",
-    icon: <Globe className="h-5 w-5 text-gray-600 group-hover:text-current dark:text-gray-300" aria-hidden="true" />,
+    icon: <Globe className="h-5 w-5 text-[var(--text-color-secondary)] group-hover:text-current" aria-hidden="true" />,
   },
   {
     href: "https://www.w3.org/TR/CSS/",
     text: "CSS Specification",
-    icon: <BookOpen className="h-5 w-5 text-gray-600 group-hover:text-current dark:text-gray-300" aria-hidden="true" />,
+    icon: <BookOpen className="h-5 w-5 text-[var(--text-color-secondary)] group-hover:text-current" aria-hidden="true" />,
   },
 ];

@@ -15,21 +15,21 @@ export function LayerNode({ node, selectedId, onMove }: Props) {
 
   return (
     <div className="flex w-full items-center gap-2">
-      <span className="inline-flex h-5 w-5 items-center justify-center text-slate-700">
+      <span className={`inline-flex h-5 w-5 items-center justify-center ${isSelected ? 'text-[var(--primary-color-text)]' : 'text-[var(--text-color-secondary)]'}`}>
         <i className={`${LAYER_ICON[element.type] ?? 'pi pi-pencil'} text-xs`} aria-hidden="true" />
       </span>
-      <span className={`truncate text-sm ${isSelected ? 'font-semibold text-slate-900' : 'text-slate-800'}`}>
+      <span className={`truncate text-sm ${isSelected ? 'font-semibold text-[var(--primary-color-text)]' : 'text-[var(--text-color)]'}`}>
         {label}
       </span>
-      {element.locked && <i className="pi pi-lock text-xs text-slate-500" aria-hidden="true" />}
-      {element.hidden && <i className="pi pi-eye-slash text-xs text-slate-500" aria-hidden="true" />}
+      {element.locked && <i className={`pi pi-lock text-xs ${isSelected ? 'text-[var(--primary-color-text)]' : 'text-[var(--text-color-secondary)]'}`} aria-hidden="true" />}
+      {element.hidden && <i className={`pi pi-eye-slash text-xs ${isSelected ? 'text-[var(--primary-color-text)]' : 'text-[var(--text-color-secondary)]'}`} aria-hidden="true" />}
       <div className="ml-auto flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
         {LAYER_ACTIONS.map(({ dir, tooltip }) => (
           <Button
             key={dir}
             type="button"
             text
-            className="h-6 w-6 p-0 text-slate-600"
+            className={`h-6 w-6 p-0 ${isSelected ? 'text-[var(--primary-color-text)]' : 'text-[var(--text-color-secondary)]'}`}
             tooltip={tooltip}
             tooltipOptions={{ position: 'top', showDelay: 120 }}
             onClick={(e) => { e.stopPropagation(); onMove(element.id, dir) }}

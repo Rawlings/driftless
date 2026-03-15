@@ -23,14 +23,16 @@ export function getLayerLabel(element: Element, index: number): string {
 
 export const treePt: TreePassThroughOptions = {
   root: { className: 'border-none bg-transparent p-0' },
-  container: { className: 'divide-y divide-slate-100' },
-  subgroup: { className: 'pl-4' },
+  container: { className: 'divide-y divide-[var(--surface-border)]' },
+  subgroup: { className: 'pl-3' },
   toggler: {
-    className: 'mr-1 inline-flex h-5 w-5 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+    className: 'mr-1 inline-flex h-5 w-5 items-center justify-center rounded-md text-[var(--text-color-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-color)]'
   },
   content: (options) => ({
     className: `group flex items-center gap-2 px-2.5 py-2 transition-colors ${
-      options?.context?.selected ? 'bg-slate-200' : 'hover:bg-slate-200/60'
+      options?.context?.selected
+        ? 'bg-[var(--primary-color)] text-[var(--primary-color-text)]'
+        : 'hover:bg-[var(--surface-hover)]'
     }`
   })
 }
